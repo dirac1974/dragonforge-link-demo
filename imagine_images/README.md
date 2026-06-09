@@ -1,0 +1,1 @@
+Placeholder folder for slot symbols. Images need to be added.
