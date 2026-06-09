@@ -8,24 +8,14 @@
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;700&display=swap');
         
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background: linear-gradient(#1a0f0a, #2c1810);
             color: #f4d9a0;
             font-family: 'Roboto', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
             min-height: 100vh;
         }
-        
-        .header {
-            width: 100%;
-            max-width: 820px;
-            padding: 15px 10px;
-            text-align: center;
-        }
-        
+        .header { width: 100%; max-width: 820px; padding: 15px 10px; text-align: center; }
         .title {
             font-family: 'Playfair Display', serif;
             font-size: 2.6rem;
@@ -33,134 +23,58 @@
             text-shadow: 0 0 20px #c8102e, 2px 2px 0 #8c0a1f;
             margin: 0;
         }
-        
         .game-container {
-            width: 100%;
-            max-width: 820px;
-            margin: 10px auto;
-            background: #1f140f;
-            border: 6px solid #c5a26f;
-            border-radius: 14px;
-            box-shadow: 0 0 30px rgba(200, 16, 46, 0.5);
+            width: 100%; max-width: 820px; margin: 10px auto;
+            background: #1f140f; border: 6px solid #c5a26f;
+            border-radius: 14px; box-shadow: 0 0 30px rgba(200, 16, 46, 0.5);
             overflow: hidden;
         }
-        
         .reels {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
-            padding: 16px;
-            background: #0d0704;
+            display: grid; grid-template-columns: repeat(5, 1fr);
+            gap: 6px; padding: 16px; background: #0d0704;
         }
-        
         .reel {
-            background: #2c1810;
-            border: 3px solid #c5a26f;
-            border-radius: 8px;
-            overflow: hidden;
-            height: 380px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
-            position: relative;
+            background: #2c1810; border: 3px solid #c5a26f;
+            border-radius: 8px; overflow: hidden; height: 380px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.9); position: relative;
         }
-        
         .symbol {
-            width: 100%;
-            height: 126.66px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            border-bottom: 2px solid #5c4033;
-            position: relative;
+            width: 100%; height: 126.66px;
+            display: flex; align-items: center; justify-content: center;
+            background: #2c1810; border-bottom: 2px solid #5c4033;
+            position: relative; overflow: hidden;
         }
-        
-        .symbol:last-child {
-            border-bottom: none;
-        }
-        
-        .controls {
-            padding: 16px;
-            background: #2c1810;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-            justify-content: center;
-            border-top: 4px solid #c5a26f;
-        }
-        
+        .symbol:last-child { border-bottom: none; }
+        .controls { padding: 16px; background: #2c1810; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; border-top: 4px solid #c5a26f; }
         button {
-            background: linear-gradient(#c8102e, #8c0a1f);
-            color: #ffd700;
-            border: 3px solid #ffd700;
-            padding: 12px 28px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
+            background: linear-gradient(#c8102e, #8c0a1f); color: #ffd700;
+            border: 3px solid #ffd700; padding: 12px 28px;
+            font-size: 1.2rem; font-weight: bold; cursor: pointer;
+            border-radius: 8px; transition: all 0.2s;
         }
-        
         button:hover { transform: scale(1.05); }
-        
-        .bet-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.4rem;
-        }
-        
-        .status {
-            text-align: center;
-            font-size: 1.35rem;
-            margin: 8px 0;
-            min-height: 36px;
-            color: #ffd700;
-        }
-        
-        .info-panel {
-            width: 100%;
-            max-width: 820px;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 15px;
-            margin-bottom: 8px;
-        }
-        
+        .bet-controls { display: flex; align-items: center; gap: 8px; font-size: 1.4rem; }
+        .status { text-align: center; font-size: 1.35rem; margin: 8px 0; min-height: 36px; color: #ffd700; }
+        .info-panel { width: 100%; max-width: 820px; display: flex; justify-content: space-between; padding: 0 15px; margin-bottom: 8px; }
         .balance, .win {
-            background: rgba(0,0,0,0.7);
-            padding: 8px 20px;
-            border-radius: 8px;
-            border: 2px solid #c5a26f;
-            font-size: 1.25rem;
-            font-weight: bold;
+            background: rgba(0,0,0,0.7); padding: 8px 20px;
+            border-radius: 8px; border: 2px solid #c5a26f;
+            font-size: 1.25rem; font-weight: bold;
         }
-        
         .lock-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #ffd700;
-            color: #c8102e;
-            padding: 1px 7px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
+            position: absolute; top: 8px; right: 8px;
+            background: #ffd700; color: #c8102e;
+            padding: 1px 7px; border-radius: 4px;
+            font-size: 0.7rem; font-weight: bold;
         }
+        svg { width: 85%; height: 85%; filter: drop-shadow(0 0 12px gold); }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1 class="title">DRAGONFORGE LINK</h1>
-    </div>
-
+    <div class="header"><h1 class="title">DRAGONFORGE LINK</h1></div>
     <div class="game-container">
         <div class="reels" id="reels"></div>
-        
         <div class="status" id="status">Welcome to DragonForge Link • Press SPIN</div>
-        
         <div class="controls">
             <div class="bet-controls">
                 <button onclick="changeBet(-1)">−</button>
@@ -168,37 +82,36 @@
                 <button onclick="changeBet(1)">+</button>
                 <span style="font-size:0.9rem; margin-left:6px;">credits</span>
             </div>
-            
             <button id="spin-btn" onclick="spin()" style="font-size:1.5rem; padding:14px 42px;">SPIN</button>
             <button onclick="autoSpin()" style="background:#5c4033; border-color:#c5a26f;">AUTO</button>
         </div>
     </div>
-
     <div class="info-panel">
         <div class="balance">Balance: <span id="balance">10000</span></div>
         <div class="win">Win: <span id="last-win">0</span></div>
     </div>
 
     <script>
-        const CONFIG = {
-            reels: 5,
-            rows: 3,
-            symbols: ['DRAGON', 'ORB', 'COIN', 'LANTERN', 'WILD', 'SCAT1', 'SCAT2']
-        };
+        const CONFIG = { reels: 5, rows: 3, symbols: ['DRAGON', 'ORB', 'COIN', 'LANTERN', 'WILD', 'SCAT1', 'SCAT2'] };
+        let balance = 10000; let currentBet = 50; let isSpinning = false;
 
-        let balance = 10000;
-        let currentBet = 50;
-        let isSpinning = false;
+        const svgSymbols = {
+            DRAGON: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="dg" x1="30%" y1="20%" x2="80%" y2="90%"><stop offset="0%" stop-color="#ffcc00"/><stop offset="100%" stop-color="#b8860b"/></linearGradient><filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M40 80 Q60 40 100 50 Q140 40 160 80 Q150 120 100 140 Q50 120 40 80" fill="url(#dg)" stroke="#8B0000" stroke-width="18" filter="url(#glow)"/><circle cx="70" cy="70" r="12" fill="#111"/><circle cx="130" cy="70" r="12" fill="#111"/><path d="M65 110 Q100 145 135 110" fill="none" stroke="#ff4500" stroke-width="22" stroke-linecap="round" filter="url(#glow)"/><polygon points="55,55 45,40 70,45" fill="#8B0000"/></svg>`,
+            ORB: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="orbg" cx="48%" cy="38%"><stop offset="0%" stop-color="#00f0ff"/><stop offset="60%" stop-color="#0088ff"/><stop offset="100%" stop-color="#0044aa"/></radialGradient><filter id="oglow"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="100" cy="100" r="78" fill="url(#orbg)" stroke="#ffd700" stroke-width="18" filter="url(#oglow)"/><circle cx="100" cy="100" r="38" fill="#111"/><text x="100" y="118" font-size="52" text-anchor="middle" fill="#fff" filter="url(#oglow)">🔥</text></svg>`,
+            COIN: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffd700"/><stop offset="100%" stop-color="#b8860b"/></linearGradient></defs><circle cx="100" cy="100" r="82" fill="url(#cg)" stroke="#8B4513" stroke-width="22"/><circle cx="100" cy="100" r="55" fill="none" stroke="#8B4513" stroke-width="12"/><text x="100" y="125" font-size="72" text-anchor="middle" fill="#8B0000" font-weight="bold">文</text></svg>`,
+            LANTERN: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="lg" x1="50%" y1="30%" x2="50%" y2="80%"><stop offset="0%" stop-color="#ff2222"/><stop offset="100%" stop-color="#aa0000"/></linearGradient></defs><rect x="55" y="45" width="90" height="115" rx="18" fill="url(#lg)" stroke="#ffd700" stroke-width="16"/><circle cx="100" cy="78" r="28" fill="#ffaa00"/><path d="M72 165 L128 165" stroke="#ffd700" stroke-width="22" stroke-linecap="round"/><text x="100" y="72" font-size="38" text-anchor="middle" fill="#fff">🏮</text></svg>`,
+            WILD: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg" x1="20%" y1="20%" x2="80%" y2="80%"><stop offset="0%" stop-color="#ffd700"/><stop offset="100%" stop-color="#ff4500"/></linearGradient></defs><polygon points="100,25 145,75 190,85 150,130 165,185 100,150 35,185 50,130 10,85 55,75" fill="url(#wg)" stroke="#8B0000" stroke-width="18"/><text x="100" y="125" font-size="48" text-anchor="middle" fill="#8B0000" font-weight="900">WILD</text></svg>`,
+            SCAT1: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="38" width="124" height="124" rx="22" fill="#c8102e" stroke="#ffd700" stroke-width="18"/><text x="100" y="135" font-size="92" text-anchor="middle" fill="#ffd700">福</text></svg>`,
+            SCAT2: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="78" fill="#ffd700" stroke="#c8102e" stroke-width="24"/><text x="100" y="125" font-size="88" text-anchor="middle" fill="#c8102e">⚡</text></svg>`
+        };
 
         function initReels() {
             const container = document.getElementById('reels');
             container.innerHTML = '';
-            
             for (let r = 0; r < CONFIG.reels; r++) {
                 const reel = document.createElement('div');
                 reel.className = 'reel';
                 reel.id = `reel-${r}`;
-                
                 for (let row = 0; row < CONFIG.rows; row++) {
                     const symbol = document.createElement('div');
                     symbol.className = 'symbol';
@@ -207,7 +120,6 @@
                 }
                 container.appendChild(reel);
             }
-            
             for (let r = 0; r < CONFIG.reels; r++) {
                 for (let row = 0; row < CONFIG.rows; row++) {
                     setSymbol(r, row, getRandomSymbol());
@@ -222,56 +134,24 @@
         function setSymbol(reel, row, symbol) {
             const el = document.getElementById(`symbol-${reel}-${row}`);
             if (!el) return;
-
-            el.innerHTML = '';
-            el.style.backgroundImage = '';
-            el.style.background = '#2c1810';
-
-            const imageMap = {
-                'ORB': './imagine_images/7WVtD.jpg',
-                'DRAGON': './imagine_images/XLwVk.jpg',
-                'COIN': './imagine_images/emapH.jpg',
-                'LANTERN': './imagine_images/IlA7r.jpg',
-                'WILD': './imagine_images/XBGCg.jpg'
-            };
-
-            if (imageMap[symbol]) {
-                el.style.backgroundImage = `url('${imageMap[symbol]}')`;
-                el.style.backgroundSize = 'cover';
-                el.style.backgroundPosition = 'center';
-                
-                if (symbol === 'ORB') {
-                    const badge = document.createElement('div');
-                    badge.className = 'lock-badge';
-                    badge.textContent = 'HOLD';
-                    el.appendChild(badge);
-                }
-            } else {
-                const colors = { 'SCAT1': '#c8102e', 'SCAT2': '#ffaa00' };
-                el.style.background = colors[symbol] || '#3a2a1f';
-                el.innerHTML = getEmoji(symbol);
+            el.innerHTML = svgSymbols[symbol] || '<span style="font-size:4rem;">❓</span>';
+            if (symbol === 'ORB') {
+                const badge = document.createElement('div');
+                badge.className = 'lock-badge';
+                badge.textContent = 'HOLD';
+                el.appendChild(badge);
             }
-        }
-
-        function getEmoji(symbol) {
-            const map = {
-                'DRAGON': '🐉', 'ORB': '🔥', 'COIN': '💰',
-                'LANTERN': '🏮', 'WILD': '★', 'SCAT1': '🧧', 'SCAT2': '⚡'
-            };
-            return `<span style="font-size:3.2rem; filter:drop-shadow(2px 2px 3px black);">${map[symbol] || '?'}</span>`;
         }
 
         async function animateReel(reelIndex, finalSymbols) {
             const reelEl = document.getElementById(`reel-${reelIndex}`);
             if (!reelEl) return;
-
-            for (let i = 0; i < 7; i++) {
+            for (let i = 0; i < 8; i++) {
                 for (let row = 0; row < CONFIG.rows; row++) {
                     setSymbol(reelIndex, row, getRandomSymbol());
                 }
-                await new Promise(r => setTimeout(r, 55));
+                await new Promise(r => setTimeout(r, 60));
             }
-
             for (let row = 0; row < CONFIG.rows; row++) {
                 setSymbol(reelIndex, row, finalSymbols[row]);
             }
@@ -282,66 +162,47 @@
             isSpinning = true;
             document.getElementById('spin-btn').disabled = true;
             document.getElementById('status').textContent = 'SPINNING...';
-
             balance -= currentBet;
             updateUI();
-
             const outcome = generateOutcome();
-
             const promises = [];
             for (let r = 0; r < CONFIG.reels; r++) {
                 promises.push(animateReel(r, outcome.grid[r]));
             }
             await Promise.all(promises);
-
             processOutcome(outcome);
             isSpinning = false;
             document.getElementById('spin-btn').disabled = false;
         }
 
         function generateOutcome() {
-            let grid = [];
-            let totalWin = 0;
-            let bonusType = null;
-
+            let grid = []; let totalWin = 0; let bonusType = null;
             for (let r = 0; r < CONFIG.reels; r++) {
                 let col = [];
                 for (let row = 0; row < CONFIG.rows; row++) {
                     let sym = getRandomSymbol();
-                    if (Math.random() < 0.11) sym = 'SCAT2';
-                    if (Math.random() < 0.07) sym = 'SCAT1';
-                    if (Math.random() < 0.05) sym = 'DRAGON';
+                    if (Math.random() < 0.12) sym = 'SCAT2';
+                    if (Math.random() < 0.08) sym = 'SCAT1';
+                    if (Math.random() < 0.06) sym = 'DRAGON';
                     col.push(sym);
                 }
                 grid.push(col);
             }
-
-            let scat2 = 0;
-            grid.forEach(c => c.forEach(s => { if (s === 'SCAT2') scat2++; }));
-
+            let scat2 = 0; grid.forEach(c => c.forEach(s => { if (s === 'SCAT2') scat2++; }));
             if (scat2 >= 6) {
-                bonusType = 'holdAndSpin';
-                totalWin = currentBet * 30;
+                bonusType = 'holdAndSpin'; totalWin = currentBet * 35;
             } else {
-                let scat1 = 0;
-                grid.forEach(c => c.forEach(s => { if (s === 'SCAT1') scat1++; }));
-                if (scat1 >= 3) {
-                    bonusType = 'freeGames';
-                    totalWin = currentBet * 10;
-                } else {
-                    totalWin = calculateWin(grid);
-                }
+                let scat1 = 0; grid.forEach(c => c.forEach(s => { if (s === 'SCAT1') scat1++; }));
+                if (scat1 >= 3) { bonusType = 'freeGames'; totalWin = currentBet * 12; } else { totalWin = calculateWin(grid); }
             }
-
             return { grid, totalWin, bonusType, scat2Count: scat2 };
         }
 
         function calculateWin(grid) {
-            let win = 0;
-            const mid = grid.map(c => c[1]);
+            let win = 0; const mid = grid.map(c => c[1]);
             for (let i = 0; i < 3; i++) {
                 if (mid[i] === mid[i+1] && mid[i] === mid[i+2] && !['SCAT1','SCAT2'].includes(mid[i])) {
-                    win += currentBet * 4;
+                    win += currentBet * 5;
                 }
             }
             return Math.floor(win);
@@ -351,10 +212,9 @@
             document.getElementById('last-win').textContent = outcome.totalWin;
             balance += outcome.totalWin;
             updateUI();
-
             let msg = `Win: ${outcome.totalWin} credits`;
             if (outcome.bonusType === 'holdAndSpin') {
-                msg = `HOLD & SPIN! (${outcome.scat2Count} Orbs locked)`;
+                msg = `HOLD & SPIN BONUS! (${outcome.scat2Count} Orbs)`;
                 triggerHoldAndSpin(outcome.grid);
             } else if (outcome.bonusType === 'freeGames') {
                 msg = `FREE GAMES TRIGGERED!`;
@@ -377,10 +237,10 @@
                         }
                     }
                 }
-                document.getElementById('status').textContent = 'HOLD & SPIN COMPLETE • Big win!';
-                balance += currentBet * 45;
+                document.getElementById('status').textContent = 'HOLD & SPIN COMPLETE • Major Win!';
+                balance += currentBet * 50;
                 updateUI();
-            }, 1200);
+            }, 1400);
         }
 
         function changeBet(delta) {
@@ -397,25 +257,17 @@
             if (isSpinning) return;
             let count = 0;
             const iv = setInterval(() => {
-                if (count++ >= 4 || balance < currentBet) { clearInterval(iv); return; }
+                if (count++ >= 5 || balance < currentBet) { clearInterval(iv); return; }
                 spin();
-            }, 2800);
+            }, 2600);
         }
 
         function initGame() {
             initReels();
             updateUI();
-            
-            document.querySelector('.title').addEventListener('click', () => {
-                balance += 300;
-                updateUI();
-            });
-            
+            document.querySelector('.title').addEventListener('click', () => { balance += 500; updateUI(); });
             document.addEventListener('keydown', e => {
-                if ((e.key === ' ' || e.key === 'Enter') && !isSpinning) {
-                    e.preventDefault();
-                    spin();
-                }
+                if ((e.key === ' ' || e.key === 'Enter') && !isSpinning) { e.preventDefault(); spin(); }
             });
         }
 
