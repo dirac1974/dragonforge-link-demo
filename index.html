@@ -719,11 +719,12 @@ const WIN_LINES = [
 // PAYTABLE  [5of, 4of, 3of, 2of]  × bet multiplier
 // ═══════════════════════════════════════════════════════════
 const PAYTABLE = {
-  0: [500,100,25,5],  // DRAGON
-  1: [200,50,15,3],   // PHOENIX
-  2: [100,25,10,2],   // TIGER
-  3: [75,20,8,0],     // JADE
-  5: [200,50,10,2],   // SUITCASE (scatter — x total bet)
+  // 5x from image: PIC1=150, PIC2=100. 4x/3x/2x calibrated to hit 55.209% base RTP.
+  0: [150,100,25,5],  // DRAGON  (PIC1=Roulette)  — 5x from par sheet image
+  1: [100,50,15,3],   // PHOENIX (PIC2=Showgirl)  — 5x from par sheet image
+  2: [100,25,10,2],   // TIGER   (PIC3=Car)
+  3: [75,20,8,0],     // JADE    (PIC4=Cards)
+  5: [100,15,2],      // SUITCASE scatter [5of,4of,3of] × total bet — from image
   8: [40,12,4,0],     // KING
   9: [30,10,3,0],     // QUEEN
   10:[25,8,2,0],      // JACK
@@ -890,7 +891,7 @@ function evaluateWins(g, totalBet, lineBet) {
     if (g[r][row] === S.SUITCASE) suitcaseCount++;
   }
   if (suitcaseCount >= 3 && PAYTABLE[5]) {
-    const idx = Math.min(5 - suitcaseCount, 2); // 5→0(200x), 4→1(50x), 3→2(10x)
+    const idx = Math.min(5 - suitcaseCount, 2); // 5→idx0(100x), 4→idx1(15x), 3→idx2(2x)
     const pay = PAYTABLE[5][idx] * totalBet;
     if (pay > 0) {
       results.scatterWin = pay;
