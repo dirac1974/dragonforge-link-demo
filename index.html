@@ -142,6 +142,21 @@ body {
   from { box-shadow: 0 0 14px rgba(255,215,0,.35), inset 0 0 20px rgba(255,215,0,.1); }
   to   { box-shadow: 0 0 32px rgba(255,215,0,.65), inset 0 0 40px rgba(255,215,0,.2); }
 }
+/* mega-reel spin: the big 3×3 symbol streams downward like a normal reel */
+#fg-big-sym.spinning { animation: bigSymSpin .1s linear 999; }
+#fg-big-sym.spinning svg { filter: blur(2.4px) brightness(.82) saturate(.9); }
+@keyframes bigSymSpin {
+  0%   { transform: translateY(-9px); }
+  100% { transform: translateY(9px);  }
+}
+/* mega-reel stop bounce — overshoots then springs back, like a single reel */
+#fg-big-sym.big-bounce { animation: bigSymBounce .44s cubic-bezier(.2,.8,.3,1.2) 1; }
+@keyframes bigSymBounce {
+  0%   { transform: translateY(-20px) scale(.975); }
+  55%  { transform: translateY(8px)   scale(1.01); }
+  80%  { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
 
 /* spinning — symbols stream downward via JS; light blur sells the motion.
    finite iteration counts avoid screenshot renderer stall */
@@ -1190,7 +1205,13 @@ function startSpinAnim(finalGrid, onDone) {
   setSpin(true);
   clearDragonStacks();
 
+  // In Free Games reels 2-3-4 are LINKED: one mega reel of big 3×3 symbols.
+  // Reels 1 & 5 still scroll independently with their own FG strips.
+  const fgLinked = inFreeGames;
+  if (fgLinked) startMegaReelSpin();
+
   for (let r = 0; r < 5; r++) {
+    if (fgLinked && r >= 1 && r <= 3) continue; // middle driven by the mega reel
     visBuf[r] = [grid[r][0], grid[r][1], grid[r][2]];
     const strip = visStrip(r);
     clearInterval(scrollIntervals[r]);
@@ -1201,6 +1222,17 @@ function startSpinAnim(finalGrid, onDone) {
       visBuf[r][0] = strip[Math.floor(Math.random() * strip.length)];
       for (let row = 0; row < 3; row++) renderCell(r, row, visBuf[r][row]);
     }, 75);
+  }
+
+  if (fgLinked) {
+    // Stop left→right: reel 1, then the linked mega reel (2-4), then reel 5.
+    const tasks = [
+      [700,  () => stopReel(0, finalGrid[0])],
+      [1250, () => stopMegaReel(finalGrid[1][0])],
+      [1850, () => { stopReel(4, finalGrid[4]); isSpinning = false; setSpin(false); onDone(); }],
+    ];
+    tasks.forEach(([delay, fn]) => spinTimers.push(setTimeout(fn, delay)));
+    return;
   }
 
   const stopDelays = [700, 1000, 1300, 1600, 1900];
@@ -1259,8 +1291,9 @@ function renderAllCells() {
   }
 }
 
-// ── FG BIG symbol overlay (covers reels 2-4 window) ──
-function showBigSymbol(sym) {
+// ── FG MEGA REEL — reels 2-3-4 are linked into one giant 3×3 symbol overlay ──
+// Size/position the overlay to span the reels 2-4 window (cell-1-0 → cell-3-2).
+function positionBigSymbol() {
   const el = document.getElementById('fg-big-sym');
   const winEl = document.querySelector('.reel-window').getBoundingClientRect();
   const tl = document.getElementById('cell-1-0').getBoundingClientRect();
@@ -1269,11 +1302,46 @@ function showBigSymbol(sym) {
   el.style.top    = (tl.top - winEl.top) + 'px';
   el.style.width  = (br.right - tl.left) + 'px';
   el.style.height = (br.bottom - tl.top) + 'px';
-  el.innerHTML = sym === S.CHIP ? SVGS['BIG_CHIP'] : (SVGS[sym] || '');
   el.classList.add('show');
+  return el;
+}
+// Set the big symbol art (CHIP uses the dedicated BIG_CHIP coin).
+function setBigSymbolArt(el, sym) {
+  el.innerHTML = sym === S.CHIP ? SVGS['BIG_CHIP'] : (SVGS[sym] || '');
+}
+function showBigSymbol(sym) {
+  const el = positionBigSymbol();
+  el.classList.remove('spinning');
+  setBigSymbolArt(el, sym);
 }
 function hideBigSymbol() {
-  document.getElementById('fg-big-sym').classList.remove('show');
+  const el = document.getElementById('fg-big-sym');
+  clearInterval(fgBigInterval); fgBigInterval = null;
+  el.classList.remove('show', 'spinning', 'big-bounce');
+}
+
+// Mega-reel scroll: swap the big symbol every tick from the linked FG strip so a
+// full 3×3 symbol streams downward during the spin (not 9 small cells).
+let fgBigInterval = null;
+function startMegaReelSpin() {
+  const el = positionBigSymbol();
+  el.classList.add('spinning');
+  setBigSymbolArt(el, grid[1][0]);
+  clearInterval(fgBigInterval);
+  fgBigInterval = setInterval(() => {
+    const strip = FG_STRIPS.R234;
+    setBigSymbolArt(el, strip[Math.floor(Math.random() * strip.length)]);
+  }, 75);
+}
+function stopMegaReel(finalSym) {
+  clearInterval(fgBigInterval); fgBigInterval = null;
+  const el = document.getElementById('fg-big-sym');
+  el.classList.remove('spinning');
+  setBigSymbolArt(el, finalSym);
+  el.classList.remove('big-bounce');
+  void el.offsetWidth;            // restart bounce animation
+  el.classList.add('big-bounce');
+  setTimeout(() => el.classList.remove('big-bounce'), 460);
 }
 
 // ── STACKED DRAGON — vertical runs of 2-3 PIC1 merge into one tall dragon ──
