@@ -432,250 +432,244 @@ function rgrd(id, stops) {
   return `<radialGradient id="${id}" cx="50%" cy="40%" r="55%">${s}</radialGradient>`;
 }
 
-// DRAGON (0)
+// ── OPTION A "IMPERIAL GOLD" SYMBOL SET ──
+// Dragon Link style: PIC symbols full-bleed (no outline), royals transparent.
+// 3D treatment: layered gradients, occlusion shadows, specular highlights.
+
+// DRAGON (0) — golden dragon head, crimson
 SVGS[0] = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs>
-${rgrd('dgb',[[0,'#ffe066'],[60,'#e88000'],[100,'#c8102e']])}
-${rgrd('dge',[[0,'#ff5555'],[100,'#880000']])}
-${grd('dgf',[[0,'#ff8c00'],[50,'#ff4400'],[100,'#cc0000']],0,0,0,1)}
+<radialGradient id="dr_bg" cx="55%" cy="42%" r="75%"><stop offset="0%" stop-color="#8a1a12"/><stop offset="55%" stop-color="#4a0a06"/><stop offset="100%" stop-color="#1c0302"/></radialGradient>
+<linearGradient id="dr_g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff0bc"/><stop offset="40%" stop-color="#f0b440"/><stop offset="100%" stop-color="#8a4c0e"/></linearGradient>
+<linearGradient id="dr_g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c98a28"/><stop offset="100%" stop-color="#5a3008"/></linearGradient>
+<radialGradient id="dr_glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffd27a" stop-opacity=".35"/><stop offset="100%" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
 </defs>
-<ellipse cx="50" cy="58" rx="32" ry="24" fill="url(#dgb)"/>
-<path d="M18,52 Q4,28 26,34 Q16,50 30,55" fill="#b50020"/>
-<path d="M82,52 Q96,28 74,34 Q84,50 70,55" fill="#b50020"/>
-<path d="M19,50 Q9,35 24,38" fill="none" stroke="#7a000e" stroke-width="1.2"/>
-<path d="M81,50 Q91,35 76,38" fill="none" stroke="#7a000e" stroke-width="1.2"/>
-<path d="M42,44 Q44,26 50,23 Q56,26 58,44" fill="#f0a800"/>
-<ellipse cx="50" cy="30" rx="19" ry="16" fill="url(#dgb)"/>
-<ellipse cx="50" cy="37" rx="11" ry="8" fill="#e09000"/>
-<ellipse cx="43" cy="27" rx="5" ry="5" fill="url(#dge)"/>
-<ellipse cx="57" cy="27" rx="5" ry="5" fill="url(#dge)"/>
-<ellipse cx="43" cy="27" rx="2.2" ry="2.5" fill="#000"/>
-<ellipse cx="57" cy="27" rx="2.2" ry="2.5" fill="#000"/>
-<ellipse cx="43.8" cy="26" rx=".9" ry=".9" fill="#fff"/>
-<ellipse cx="57.8" cy="26" rx=".9" ry=".9" fill="#fff"/>
-<path d="M38,19 L33,7 L41,18" fill="#d4a000" stroke="#a07800" stroke-width=".6"/>
-<path d="M62,19 L67,7 L59,18" fill="#d4a000" stroke="#a07800" stroke-width=".6"/>
-<path d="M37,18 L34,11 L38,17" fill="#ffe080"/>
-<path d="M63,18 L66,11 L62,17" fill="#ffe080"/>
-<ellipse cx="46.5" cy="39" rx="1.8" ry="1" fill="#a06000" opacity=".8"/>
-<ellipse cx="53.5" cy="39" rx="1.8" ry="1" fill="#a06000" opacity=".8"/>
-<path d="M44,44 Q40,54 37,62 Q42,57 46,63 Q49,70 53,63 Q57,57 62,62 Q59,54 56,44" fill="url(#dgf)" opacity=".9"/>
-<path d="M46,44 Q43,52 41,58 Q45,54 48,59 Q50,63 52,59 Q55,54 59,58 Q57,52 54,44" fill="#ffdd00" opacity=".85"/>
-<path d="M34,60 Q38,55 42,60 Q46,65 42,68 Q38,71 34,68 Q30,65 34,60Z" fill="none" stroke="#d4a000" stroke-width=".8" opacity=".7"/>
-<path d="M44,64 Q48,59 52,64 Q56,69 52,72 Q48,75 44,72 Q40,69 44,64Z" fill="none" stroke="#d4a000" stroke-width=".8" opacity=".7"/>
-<path d="M54,60 Q58,55 62,60 Q66,65 62,68 Q58,71 54,68 Q50,65 54,60Z" fill="none" stroke="#d4a000" stroke-width=".8" opacity=".7"/>
-<path d="M70,76 Q78,80 80,90 L76,84 Q74,92 72,89 L71,82 Q67,90 65,87 Q68,82 70,76Z" fill="#c8102e"/>
+<rect width="100" height="100" fill="url(#dr_bg)"/>
+<g opacity=".12" stroke="#ffd27a" stroke-width="1"><line x1="50" y1="50" x2="96" y2="10"/><line x1="50" y1="50" x2="100" y2="38"/><line x1="50" y1="50" x2="8" y2="6"/><line x1="50" y1="50" x2="2" y2="34"/></g>
+<ellipse cx="58" cy="48" rx="34" ry="28" fill="url(#dr_glow)"/>
+<ellipse cx="34" cy="92" rx="22" ry="5" fill="#000" opacity=".4"/>
+<path d="M30,30 Q22,18 30,8 Q32,20 40,24 Q30,28 30,30Z" fill="url(#dr_g2)"/>
+<path d="M42,26 Q40,12 50,4 Q48,16 56,22 Q46,24 42,26Z" fill="url(#dr_g2)"/>
+<path d="M10,96 C20,78 26,68 40,58 L54,70 C42,78 34,86 26,98 Z" fill="url(#dr_g)"/>
+<path d="M18,94 C28,82 36,74 48,66 L54,70 C42,78 34,86 26,98 Z" fill="#5a3008" opacity=".5"/>
+<path d="M12,92 C22,76 28,67 41,59" stroke="#fff3c8" stroke-width="1.8" fill="none" opacity=".6" stroke-linecap="round"/>
+<path d="M22,84 q6,-3 10,2 M28,76 q6,-3 10,2 M35,68 q6,-3 10,2" stroke="#7a4410" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<path d="M36,52 Q42,32 58,30 Q74,28 82,40 Q88,48 84,54 Q80,58 70,57 L52,60 Q40,60 36,52Z" fill="url(#dr_g)"/>
+<path d="M50,58 Q62,57 72,56 Q80,56 84,52 Q82,57 74,58 L52,60 Q44,60 40,56 Q45,59 50,58Z" fill="#5a3008" opacity=".55"/>
+<path d="M40,44 Q46,33 58,31 Q70,30 78,38" stroke="#fff3c8" stroke-width="1.6" fill="none" opacity=".55" stroke-linecap="round"/>
+<path d="M52,60 Q62,68 76,64 Q70,74 56,72 Q48,70 48,64 Z" fill="url(#dr_g2)"/>
+<path d="M54,66 Q62,71 72,68 Q64,73 56,71 Z" fill="#3a1c04" opacity=".6"/>
+<path d="M82,42 q6,-3 4,3 q-2,4 -6,2" fill="#7a4410"/>
+<path d="M44,40 Q54,32 66,36" stroke="#7a4410" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M46,42 Q55,35 64,38" stroke="#3a1c04" stroke-width="1.4" fill="none" opacity=".6" stroke-linecap="round"/>
+<circle cx="58" cy="44" r="6.5" fill="#0a2a26"/><circle cx="58" cy="44" r="4.2" fill="#22e8c8"/><ellipse cx="58" cy="44" rx="1.4" ry="3.4" fill="#06201c"/><circle cx="56.4" cy="42" r="1.3" fill="#fff"/>
+<path d="M54,34 C50,22 58,14 68,12 C61,20 60,27 62,33 Z" fill="url(#dr_g)"/>
+<path d="M62,33 C60,26 61,19 68,12 C64,20 64,27 65,32 Z" fill="#5a3008" opacity=".6"/>
+<path d="M66,35 C66,24 74,18 84,18 C76,25 74,30 74,37 Z" fill="url(#dr_g2)"/>
+<path d="M86,48 C94,44 97,36 94,26" stroke="#f0c25a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<path d="M84,56 C94,58 98,66 96,78" stroke="#f0c25a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<path d="M70,60 l3,6 l4,-5 Z" fill="#fff8e0"/><path d="M62,61 l2,5 l4,-4 Z" fill="#fff8e0"/>
+<circle cx="14" cy="20" r="1.2" fill="#ffd27a" opacity=".7"/><circle cx="88" cy="84" r="1.5" fill="#ffd27a" opacity=".5"/><circle cx="22" cy="44" r="1" fill="#ffd27a" opacity=".5"/>
 </svg>`;
 
-// PHOENIX (1)
+// PHOENIX (1) — fire bird, plum
 SVGS[1] = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs>
-${rgrd('phb',[[0,'#ffe500'],[50,'#ff6600'],[100,'#cc1100']])}
-${grd('phf',[[0,'#ffe000'],[50,'#ff7700'],[100,'#dd2200']],0,0,0,1)}
+<radialGradient id="ph_bg" cx="42%" cy="40%" r="78%"><stop offset="0%" stop-color="#5a1248"/><stop offset="60%" stop-color="#30082a"/><stop offset="100%" stop-color="#120210"/></radialGradient>
+<linearGradient id="ph_f" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#c81c30"/><stop offset="50%" stop-color="#ff7a2a"/><stop offset="100%" stop-color="#ffd25a"/></linearGradient>
+<linearGradient id="ph_f2" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#6a0c1c"/><stop offset="100%" stop-color="#c84818"/></linearGradient>
+<radialGradient id="ph_glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff9a3a" stop-opacity=".4"/><stop offset="100%" stop-color="#ff9a3a" stop-opacity="0"/></radialGradient>
 </defs>
-<ellipse cx="50" cy="50" rx="46" ry="42" fill="#1a0500" opacity=".4"/>
-<path d="M50,15 Q30,5 10,20 Q25,25 30,35 Q20,30 8,40 Q22,38 28,50 Q15,50 5,65 Q20,58 30,62 Q20,72 18,85 Q32,70 42,72 Q38,82 40,95 Q48,80 50,72 Q52,80 60,95 Q62,82 58,72 Q68,70 82,85 Q80,72 70,62 Q80,58 95,65 Q85,50 72,50 Q78,38 92,40 Q80,30 70,35 Q75,25 90,20 Q70,5 50,15Z" fill="url(#phb)"/>
-<ellipse cx="50" cy="48" rx="14" ry="18" fill="url(#phf)"/>
-<ellipse cx="50" cy="44" rx="8" ry="10" fill="#ffe500"/>
-<ellipse cx="50" cy="36" rx="6" ry="7" fill="#fff7cc"/>
-<ellipse cx="47" cy="33" rx="2.5" ry="2.5" fill="#331100"/>
-<ellipse cx="53" cy="33" rx="2.5" ry="2.5" fill="#331100"/>
-<path d="M44,28 L42,22 L46,27" fill="#ff8800"/>
-<path d="M50,26 L50,19 L52,25" fill="#ff8800"/>
-<path d="M56,28 L58,22 L54,27" fill="#ff8800"/>
-<path d="M42,60 Q32,58 22,68 Q35,62 40,70 Q44,78 50,80 Q56,78 60,70 Q65,62 78,68 Q68,58 58,60 Q54,65 50,66 Q46,65 42,60Z" fill="#ff4400" opacity=".8"/>
-<path d="M44,62 Q38,61 32,68 Q40,64 42,70 Q45,76 50,77 Q55,76 58,70 Q60,64 68,68 Q62,61 56,62 Q53,66 50,67 Q47,66 44,62Z" fill="#ffcc00" opacity=".9"/>
+<rect width="100" height="100" fill="url(#ph_bg)"/>
+<ellipse cx="52" cy="50" rx="34" ry="32" fill="url(#ph_glow)"/>
+<path d="M6,96 C30,84 38,66 36,44 C44,60 44,76 30,92 C42,86 52,74 52,56 C58,72 52,88 38,98 Z" fill="url(#ph_f2)"/>
+<path d="M10,98 C28,90 40,78 44,60 C48,76 40,92 24,100 Z" fill="url(#ph_f)" opacity=".8"/>
+<path d="M14,95 C28,86 37,75 42,62" stroke="#ffd25a" stroke-width="1.4" fill="none" opacity=".5" stroke-linecap="round"/>
+<path d="M40,58 C46,40 56,32 70,30 C62,38 60,44 62,52 C66,46 72,42 80,42 C72,48 70,54 72,62 C64,58 56,58 50,64 Z" fill="url(#ph_f)"/>
+<path d="M62,52 C60,45 61,38 68,31 C63,38 62,45 64,51 Z" fill="#8a1024" opacity=".55"/>
+<path d="M72,60 C70,55 70,49 78,43 C73,49 72,55 73,60 Z" fill="#8a1024" opacity=".55"/>
+<path d="M44,52 C48,40 56,34 66,32" stroke="#fff0c8" stroke-width="1.4" fill="none" opacity=".55" stroke-linecap="round"/>
+<path d="M48,64 C56,58 66,58 74,64 C66,66 60,70 56,76 C52,72 50,68 48,64Z" fill="url(#ph_f2)"/>
+<ellipse cx="52" cy="50" rx="7" ry="10" fill="url(#ph_f)" transform="rotate(-24 52 50)"/>
+<ellipse cx="50" cy="46" rx="2.6" ry="4" fill="#ffe9a0" opacity=".75" transform="rotate(-24 50 46)"/>
+<path d="M46,40 Q44,30 50,24 Q56,18 54,28 Q53,34 50,38 Z" fill="url(#ph_f)"/>
+<path d="M50,26 q-2,-8 4,-12 q0,6 2,9 Z" fill="#ffd25a"/><path d="M54,28 q2,-9 9,-10 q-4,6 -3,10 Z" fill="#ff9a3a"/>
+<circle cx="49" cy="33" r="2" fill="#2a0810"/><circle cx="48.3" cy="32.3" r=".7" fill="#fff"/>
+<path d="M44,34 q-6,1 -8,5 q5,1 8,-1 Z" fill="#ffd25a"/>
+<path d="M56,76 q-2,8 4,12 M62,70 q2,8 9,9" stroke="#ff9a3a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<circle cx="82" cy="22" r="1.4" fill="#ffce6a" opacity=".8"/><circle cx="88" cy="64" r="1.1" fill="#ffce6a" opacity=".6"/><circle cx="16" cy="30" r="1.2" fill="#ff9a5a" opacity=".6"/>
 </svg>`;
 
-// TIGER (2)
+// TIGER (2) — frontal head, dark jade
 SVGS[2] = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs>
-${rgrd('tgb',[[0,'#ffcc44'],[60,'#e07000'],[100,'#883300']])}
-${rgrd('tge',[[0,'#44ff88'],[100,'#007744']])}
+<radialGradient id="tg_bg" cx="50%" cy="40%" r="75%"><stop offset="0%" stop-color="#14483a"/><stop offset="60%" stop-color="#0a2a20"/><stop offset="100%" stop-color="#03120c"/></radialGradient>
+<radialGradient id="tg_f" cx="50%" cy="32%" r="80%"><stop offset="0%" stop-color="#ffbe62"/><stop offset="55%" stop-color="#f08a28"/><stop offset="100%" stop-color="#a8480e"/></radialGradient>
 </defs>
-<ellipse cx="50" cy="55" rx="36" ry="28" fill="url(#tgb)"/>
-<path d="M14,48 Q8,30 22,36 Q14,46 26,50" fill="#e07000"/>
-<path d="M86,48 Q92,30 78,36 Q86,46 74,50" fill="#e07000"/>
-<ellipse cx="50" cy="38" rx="26" ry="22" fill="url(#tgb)"/>
-<path d="M28,28 L22,14 L32,24" fill="#cc8800"/>
-<path d="M72,28 L78,14 L68,24" fill="#cc8800"/>
-<ellipse cx="50" cy="50" rx="18" ry="13" fill="#f5c060"/>
-<ellipse cx="42" cy="34" rx="6.5" ry="6.5" fill="url(#tge)"/>
-<ellipse cx="58" cy="34" rx="6.5" ry="6.5" fill="url(#tge)"/>
-<ellipse cx="42" cy="34" rx="3" ry="3.5" fill="#000"/>
-<ellipse cx="58" cy="34" rx="3" ry="3.5" fill="#000"/>
-<ellipse cx="43" cy="33" rx="1" ry="1" fill="#fff"/>
-<ellipse cx="59" cy="33" rx="1" ry="1" fill="#fff"/>
-<path d="M30,30 Q36,22 44,20" fill="none" stroke="#884400" stroke-width="2"/>
-<path d="M70,30 Q64,22 56,20" fill="none" stroke="#884400" stroke-width="2"/>
-<path d="M34,40 Q36,35 38,40" fill="none" stroke="#884400" stroke-width="1.5"/>
-<path d="M66,40 Q64,35 62,40" fill="none" stroke="#884400" stroke-width="1.5"/>
-<path d="M42,44 Q46,40 50,44 Q54,40 58,44" fill="none" stroke="#884400" stroke-width="1.5"/>
-<ellipse cx="50" cy="50" rx="6" ry="4" fill="#f5c060"/>
-<ellipse cx="46" cy="48" rx="1.2" ry="1.2" fill="#884400"/>
-<ellipse cx="50" cy="48" rx="1.2" ry="1.2" fill="#884400"/>
-<ellipse cx="54" cy="48" rx="1.2" ry="1.2" fill="#884400"/>
-<path d="M38,48 Q26,48 18,50" fill="none" stroke="#f5c060" stroke-width=".9" opacity=".7"/>
-<path d="M38,51 Q26,52 18,56" fill="none" stroke="#f5c060" stroke-width=".9" opacity=".7"/>
-<path d="M62,48 Q74,48 82,50" fill="none" stroke="#f5c060" stroke-width=".9" opacity=".7"/>
-<path d="M62,51 Q74,52 82,56" fill="none" stroke="#f5c060" stroke-width=".9" opacity=".7"/>
-<path d="M40,56 Q44,60 50,62 Q56,60 60,56 Q56,65 50,66 Q44,65 40,56Z" fill="#cc4400" opacity=".7"/>
+<rect width="100" height="100" fill="url(#tg_bg)"/>
+<ellipse cx="50" cy="88" rx="30" ry="5" fill="#000" opacity=".45"/>
+<path d="M28,30 Q22,16 34,14 Q40,20 40,26 Z" fill="url(#tg_f)"/><path d="M33,24 q-3,-5 1,-7 q3,3 3,7 Z" fill="#3a1408"/>
+<path d="M72,30 Q78,16 66,14 Q60,20 60,26 Z" fill="url(#tg_f)"/><path d="M67,24 q3,-5 -1,-7 q-3,3 -3,7 Z" fill="#3a1408"/>
+<path d="M50,18 C68,18 80,32 78,52 C76,70 66,82 50,82 C34,82 24,70 22,52 C20,32 32,18 50,18 Z" fill="url(#tg_f)"/>
+<path d="M24,46 C23,62 30,76 44,80 C32,78 25,68 23,54 Z" fill="#7a3408" opacity=".5"/>
+<path d="M76,46 C77,62 70,76 56,80 C68,78 75,68 77,54 Z" fill="#7a3408" opacity=".5"/>
+<path d="M34,22 Q44,16 50,28 Q56,16 66,22" fill="none" stroke="#ffe2b0" stroke-width="2" opacity=".55" stroke-linecap="round"/>
+<ellipse cx="50" cy="64" rx="17" ry="13" fill="#f7ecd8"/>
+<path d="M34,68 C38,75 44,77 50,77 C56,77 62,75 66,68 C63,76 57,79 50,79 C43,79 37,76 34,68Z" fill="#c8b090" opacity=".7"/>
+<path d="M50,24 l-3,7 l3,-2 l3,2 Z M50,33 l-2.6,6 l2.6,-1.6 l2.6,1.6 Z" fill="#1c0c04"/>
+<path d="M24,42 q8,-2 12,2 M24,52 q8,-1 12,2 M76,42 q-8,-2 -12,2 M76,52 q-8,-1 -12,2" stroke="#1c0c04" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M28,66 q6,-2 9,1 M72,66 q-6,-2 -9,1" stroke="#1c0c04" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+<path d="M35,42 q6,-3 13,0" stroke="#7a3408" stroke-width="1.6" fill="none" opacity=".6" stroke-linecap="round"/>
+<path d="M52,42 q6,-3 13,0" stroke="#7a3408" stroke-width="1.6" fill="none" opacity=".6" stroke-linecap="round"/>
+<path d="M36,44 q5,-6 11,0 q-5,5 -11,0Z" fill="#fff3da"/><path d="M53,44 q5,-6 11,0 q-5,5 -11,0Z" fill="#fff3da"/>
+<ellipse cx="41.5" cy="44" rx="3" ry="3.4" fill="#e8a020"/><ellipse cx="58.5" cy="44" rx="3" ry="3.4" fill="#e8a020"/>
+<ellipse cx="41.5" cy="44.6" rx="1.3" ry="2.4" fill="#140a02"/><ellipse cx="58.5" cy="44.6" rx="1.3" ry="2.4" fill="#140a02"/>
+<circle cx="40.4" cy="42.8" r=".8" fill="#fff"/><circle cx="57.4" cy="42.8" r=".8" fill="#fff"/>
+<path d="M50,56 l-4.5,4 q4.5,3 9,0 Z" fill="#c86a54"/><circle cx="48" cy="58" r=".9" fill="#e8a890" opacity=".8"/>
+<path d="M50,60 l0,5 M50,65 q-5,4 -10,2 M50,65 q5,4 10,2" stroke="#1c0c04" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<path d="M30,60 q-8,0 -12,-2 M31,64 q-8,2 -12,1 M70,60 q8,0 12,-2 M69,64 q8,2 12,1" stroke="#f0e2c8" stroke-width="1" fill="none" opacity=".7"/>
+<path d="M26,30 Q22,44 24,54" stroke="#ffd9a0" stroke-width="1.6" fill="none" opacity=".55" stroke-linecap="round"/>
 </svg>`;
 
-// JADE (3)
+// JADE (3) — carved bi-disc with tassel, crimson silk
 SVGS[3] = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs>
-${rgrd('jdb',[[0,'#88ffaa'],[50,'#22aa55'],[100,'#005522']])}
-${grd('jdg',[[0,'#aaffcc'],[100,'#007733']],0,0,1,0)}
+<radialGradient id="jd_bg" cx="50%" cy="38%" r="78%"><stop offset="0%" stop-color="#681020"/><stop offset="60%" stop-color="#380610"/><stop offset="100%" stop-color="#160208"/></radialGradient>
+<radialGradient id="jd_j" cx="38%" cy="30%" r="82%"><stop offset="0%" stop-color="#d8fae6"/><stop offset="40%" stop-color="#52c890"/><stop offset="100%" stop-color="#0e5a3e"/></radialGradient>
 </defs>
-<path d="M50,8 L70,18 L82,38 L82,62 L70,82 L50,92 L30,82 L18,62 L18,38 L30,18 Z" fill="url(#jdb)" stroke="#00aa44" stroke-width="1.5"/>
-<path d="M50,14 L66,22 L76,40 L76,60 L66,78 L50,86 L34,78 L24,60 L24,40 L34,22 Z" fill="none" stroke="#55ffaa" stroke-width="1.2" opacity=".6"/>
-<path d="M50,20 L62,28 L70,44 L70,56 L62,72 L50,80 L38,72 L30,56 L30,44 L38,28 Z" fill="url(#jdg)" opacity=".35"/>
-<ellipse cx="50" cy="50" rx="16" ry="16" fill="url(#jdb)" stroke="#88ffaa" stroke-width="1"/>
-<ellipse cx="50" cy="50" rx="8" ry="8" fill="#ccffdd"/>
-<path d="M34,26 Q50,10 66,26" fill="none" stroke="#88ffaa" stroke-width="1.5" opacity=".7"/>
-<path d="M34,74 Q50,90 66,74" fill="none" stroke="#88ffaa" stroke-width="1.5" opacity=".7"/>
-<path d="M20,40 Q8,50 20,60" fill="none" stroke="#88ffaa" stroke-width="1.5" opacity=".5"/>
-<path d="M80,40 Q92,50 80,60" fill="none" stroke="#88ffaa" stroke-width="1.5" opacity=".5"/>
-<path d="M44,50 L50,38 L56,50 L50,62Z" fill="#00aa44" opacity=".5"/>
-<text x="50" y="96" text-anchor="middle" font-family="Arial Black" font-size="5.5" fill="#88ffaa" font-weight="900" letter-spacing="2">JADE</text>
+<rect width="100" height="100" fill="url(#jd_bg)"/>
+<g opacity=".07" stroke="#ffd" stroke-width="6"><line x1="-10" y1="30" x2="40" y2="-20"/><line x1="10" y1="80" x2="90" y2="0"/><line x1="50" y1="110" x2="120" y2="40"/></g>
+<ellipse cx="50" cy="92" rx="20" ry="4" fill="#000" opacity=".45"/>
+<circle cx="50" cy="44" r="33" fill="#ffd27a" opacity=".12"/>
+<circle cx="52" cy="46" r="27" fill="#06140c" opacity=".5"/>
+<circle cx="50" cy="44" r="27" fill="url(#jd_j)"/>
+<path d="M26,52 A27,27 0 0 0 68,64" fill="none" stroke="#06301e" stroke-width="3" opacity=".55"/>
+<path d="M28,28 A27,27 0 0 1 60,19" fill="none" stroke="#eafff2" stroke-width="3" opacity=".55" stroke-linecap="round"/>
+<circle cx="50" cy="44" r="9" fill="#2a040c"/>
+<path d="M42,40 A9,9 0 0 1 58,40" fill="none" stroke="#04180e" stroke-width="2.4" opacity=".8"/>
+<path d="M42,48 A9,9 0 0 0 58,48" fill="none" stroke="#9ae8c2" stroke-width="1.6" opacity=".7"/>
+<path d="M30,34 Q40,24 54,26 M26,46 Q28,58 38,64 M62,62 Q72,56 74,44" stroke="#0e4a32" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".75"/>
+<circle cx="36" cy="52" r="2.2" fill="#0e4a32" opacity=".7"/><circle cx="64" cy="32" r="2.2" fill="#0e4a32" opacity=".7"/>
+<ellipse cx="38" cy="28" rx="9" ry="3.4" fill="#fff" opacity=".3" transform="rotate(-35 38 28)"/>
+<rect x="46" y="8" width="8" height="7" rx="2" fill="#e8b84a"/><rect x="46" y="8" width="8" height="3" rx="1.5" fill="#fff0c0" opacity=".7"/>
+<path d="M50,15 L50,35" stroke="#c02838" stroke-width="2.6"/>
+<path d="M44,74 q6,5 12,0 l-1,6 q-5,3 -10,0 Z" fill="#e8b84a"/><path d="M45,75 q5,3 10,0" stroke="#fff0c0" stroke-width="1" fill="none" opacity=".7"/>
+<g stroke="#c81e32" stroke-width="2.6" stroke-linecap="round"><line x1="45" y1="80" x2="42" y2="95"/><line x1="50" y1="81" x2="50" y2="97"/><line x1="55" y1="80" x2="58" y2="95"/></g>
+<g stroke="#7a0e1c" stroke-width="1" stroke-linecap="round" opacity=".7"><line x1="46" y1="80" x2="43" y2="95"/><line x1="51" y1="81" x2="51" y2="97"/><line x1="56" y1="80" x2="59" y2="95"/></g>
 </svg>`;
 
-// WILD / VEGAS SIGN (4)
+// WILD (4) — golden ingot (yuanbao), no text
 SVGS[4] = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs>
-${grd('wdb',[[0,'#1a0050'],[100,'#050010']],0,0,0,1)}
-${grd('wdf',[[0,'#ff44ff'],[50,'#ff0099'],[100,'#ff4400']],0,0,1,0)}
+<radialGradient id="wl_bg" cx="50%" cy="45%" r="75%"><stop offset="0%" stop-color="#5a0a0a"/><stop offset="60%" stop-color="#2c0404"/><stop offset="100%" stop-color="#120101"/></radialGradient>
+<linearGradient id="wl_g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff4c2"/><stop offset="45%" stop-color="#f0bc3e"/><stop offset="100%" stop-color="#8a5210"/></linearGradient>
+<radialGradient id="wl_d" cx="42%" cy="28%" r="85%"><stop offset="0%" stop-color="#fff8d8"/><stop offset="45%" stop-color="#f6c948"/><stop offset="100%" stop-color="#a86a14"/></radialGradient>
+<radialGradient id="wl_glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffd25a" stop-opacity=".45"/><stop offset="100%" stop-color="#ffd25a" stop-opacity="0"/></radialGradient>
 </defs>
-<rect x="4" y="14" width="92" height="72" rx="10" fill="url(#wdb)" stroke="#ff00ff" stroke-width="2"/>
-<rect x="8" y="18" width="84" height="64" rx="7" fill="none" stroke="#ff00ff44" stroke-width="1"/>
-<!-- Neon outline glow -->
-<rect x="4" y="14" width="92" height="72" rx="10" fill="none" stroke="#ff00ff" stroke-width="4" opacity=".2" filter="url(#nglow)"/>
-<!-- Stars decorations -->
-<polygon points="10,22 11.5,26.5 16,26.5 12.5,29.2 13.8,34 10,31 6.2,34 7.5,29.2 4,26.5 8.5,26.5" fill="#ff0" opacity=".9"/>
-<polygon points="90,22 91.5,26.5 96,26.5 92.5,29.2 93.8,34 90,31 86.2,34 87.5,29.2 84,26.5 88.5,26.5" fill="#ff0" opacity=".9"/>
-<!-- WILD text -->
-<text x="50" y="56" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black" font-size="28" font-weight="900" fill="url(#wdf)" stroke="#fff" stroke-width=".8">WILD</text>
-<!-- Glow repeat -->
-<text x="50" y="56" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black" font-size="28" font-weight="900" fill="none" stroke="#ff00ff" stroke-width="3" opacity=".25">WILD</text>
-<!-- VEGAS sign lights bottom row -->
-<circle cx="18" cy="80" r="2.5" fill="#ff4" opacity=".9"/>
-<circle cx="27" cy="80" r="2.5" fill="#f4f" opacity=".9"/>
-<circle cx="36" cy="80" r="2.5" fill="#4ff" opacity=".9"/>
-<circle cx="45" cy="80" r="2.5" fill="#ff4" opacity=".9"/>
-<circle cx="55" cy="80" r="2.5" fill="#f4f" opacity=".9"/>
-<circle cx="64" cy="80" r="2.5" fill="#4ff" opacity=".9"/>
-<circle cx="73" cy="80" r="2.5" fill="#ff4" opacity=".9"/>
-<circle cx="82" cy="80" r="2.5" fill="#f4f" opacity=".9"/>
-<!-- Top lights -->
-<circle cx="18" cy="20" r="2.5" fill="#ff4" opacity=".9"/>
-<circle cx="32" cy="20" r="2.5" fill="#f4f" opacity=".9"/>
-<circle cx="50" cy="20" r="2.5" fill="#4ff" opacity=".9"/>
-<circle cx="68" cy="20" r="2.5" fill="#ff4" opacity=".9"/>
-<circle cx="82" cy="20" r="2.5" fill="#f4f" opacity=".9"/>
-<!-- Label -->
-<text x="50" y="93" text-anchor="middle" font-family="Arial Black" font-size="5" fill="#ff00ff" font-weight="900" opacity=".8">LAS VEGAS</text>
+<rect width="100" height="100" fill="url(#wl_bg)"/>
+<g opacity=".13" fill="#ffd27a"><path d="M50,52 L36,0 L52,0Z"/><path d="M50,52 L70,0 L84,4Z"/><path d="M50,52 L100,24 L100,38Z"/><path d="M50,52 L100,68 L96,82Z"/><path d="M50,52 L64,100 L48,100Z"/><path d="M50,52 L28,100 L16,94Z"/><path d="M50,52 L0,72 L0,58Z"/><path d="M50,52 L0,32 L4,20Z"/></g>
+<ellipse cx="50" cy="52" rx="40" ry="34" fill="url(#wl_glow)"/>
+<ellipse cx="50" cy="84" rx="30" ry="5.5" fill="#000" opacity=".5"/>
+<path d="M14,56 Q8,42 22,34 Q26,46 36,51 Z" fill="url(#wl_g)"/>
+<path d="M86,56 Q92,42 78,34 Q74,46 64,51 Z" fill="url(#wl_g)"/>
+<path d="M16,38 Q20,35 23,35" stroke="#fff8d8" stroke-width="1.8" fill="none" opacity=".8" stroke-linecap="round"/>
+<path d="M84,38 Q80,35 77,35" stroke="#fff8d8" stroke-width="1.8" fill="none" opacity=".8" stroke-linecap="round"/>
+<path d="M14,56 Q16,78 50,80 Q84,78 86,56 Q76,64 50,65 Q24,64 14,56Z" fill="url(#wl_g)"/>
+<path d="M20,66 Q30,76 50,77 Q70,76 80,66 Q70,72 50,73 Q30,72 20,66Z" fill="#7a4410" opacity=".55"/>
+<ellipse cx="50" cy="57" rx="36" ry="9.5" fill="#a86a14"/>
+<ellipse cx="50" cy="56" rx="36" ry="9" fill="url(#wl_g)"/>
+<ellipse cx="50" cy="56" rx="30" ry="6.6" fill="#6a3c08"/>
+<ellipse cx="50" cy="44" rx="19" ry="14" fill="url(#wl_d)"/>
+<path d="M31,46 Q34,56 50,57 Q66,56 69,46 Q66,52 50,53 Q34,52 31,46Z" fill="#7a4410" opacity=".5"/>
+<ellipse cx="43" cy="37" rx="7" ry="3.6" fill="#fff" opacity=".55" transform="rotate(-18 43 37)"/>
+<path d="M22,58 Q30,64 44,65" stroke="#fff3c8" stroke-width="1.6" fill="none" opacity=".5" stroke-linecap="round"/>
+<circle cx="20" cy="20" r="1.4" fill="#ffe9a8" opacity=".8"/><circle cx="82" cy="16" r="1.1" fill="#ffe9a8" opacity=".6"/><circle cx="88" cy="72" r="1.3" fill="#ffe9a8" opacity=".6"/><circle cx="12" cy="74" r="1" fill="#ffe9a8" opacity=".5"/>
+<path d="M76,22 l1.4,3 3,1.4 -3,1.4 -1.4,3 -1.4,-3 -3,-1.4 3,-1.4Z" fill="#fff4c2" opacity=".9"/>
 </svg>`;
 
-// SUITCASE / SCATTER (5)
+// SUITCASE/SCAT1 (5) — treasure chest, 3D
 SVGS[5] = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs>
-${grd('scb',[[0,'#ffe566'],[50,'#d4a000'],[100,'#8c6400']],0,0,0,1)}
-${grd('sct',[[0,'#fff0a0'],[100,'#c89000']],0,0,1,0)}
+<radialGradient id="ch_bg" cx="50%" cy="42%" r="78%"><stop offset="0%" stop-color="#3a2606"/><stop offset="60%" stop-color="#1e1203"/><stop offset="100%" stop-color="#0c0601"/></radialGradient>
+<linearGradient id="ch_w" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#a8682a"/><stop offset="55%" stop-color="#7a4818"/><stop offset="100%" stop-color="#4a280c"/></linearGradient>
+<linearGradient id="ch_wd" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6a3c12"/><stop offset="100%" stop-color="#341a06"/></linearGradient>
+<radialGradient id="ch_gd" cx="40%" cy="30%" r="80%"><stop offset="0%" stop-color="#fff2b4"/><stop offset="50%" stop-color="#f0bc3e"/><stop offset="100%" stop-color="#a87214"/></radialGradient>
 </defs>
-<!-- Handle -->
-<path d="M36,28 Q36,18 50,18 Q64,18 64,28" fill="none" stroke="url(#scb)" stroke-width="5" stroke-linecap="round"/>
-<!-- Case body -->
-<rect x="12" y="28" width="76" height="56" rx="8" fill="url(#scb)" stroke="#c89000" stroke-width="2"/>
-<rect x="16" y="32" width="68" height="48" rx="6" fill="url(#sct)" opacity=".25"/>
-<!-- Metal bands -->
-<rect x="12" y="46" width="76" height="6" fill="#c89000" opacity=".6"/>
-<rect x="12" y="64" width="76" height="3" fill="#c89000" opacity=".4"/>
-<!-- Clasps -->
-<rect x="42" y="48" width="16" height="8" rx="3" fill="#ffe080" stroke="#a07000" stroke-width="1.5"/>
-<rect x="46" y="50" width="8" height="4" rx="2" fill="#a07000"/>
-<!-- Corner rivets -->
-<circle cx="20" cy="36" r="3" fill="#ffe080" stroke="#a07000" stroke-width="1"/>
-<circle cx="80" cy="36" r="3" fill="#ffe080" stroke="#a07000" stroke-width="1"/>
-<circle cx="20" cy="76" r="3" fill="#ffe080" stroke="#a07000" stroke-width="1"/>
-<circle cx="80" cy="76" r="3" fill="#ffe080" stroke="#a07000" stroke-width="1"/>
-<!-- Shine -->
-<path d="M20,33 Q40,30 60,33" fill="none" stroke="#fff7aa" stroke-width="1.5" opacity=".5"/>
-<!-- SCATTER text -->
-<text x="50" y="68" text-anchor="middle" font-family="Arial Black" font-size="8" fill="#6a3800" font-weight="900" letter-spacing="1">SCATTER</text>
-<!-- Stars sparkle -->
-<polygon points="88,14 89,18 93,18 90,20.5 91,24.5 88,22 85,24.5 86,20.5 83,18 87,18" fill="#ffd700" opacity=".95"/>
-<polygon points="76,8 77,11 80,11 77.8,12.8 78.7,16 76,14.2 73.3,16 74.2,12.8 72,11 75,11" fill="#ffd700" opacity=".85"/>
-<polygon points="92,26 93,29 96,29 93.8,30.8 94.7,34 92,32.2 89.3,34 90.2,30.8 88,29 91,29" fill="#ffd700" opacity=".75"/>
+<rect width="100" height="100" fill="url(#ch_bg)"/>
+<g fill="#ffe9a8"><path d="M50,46 L28,6 L40,4Z" opacity=".3"/><path d="M50,46 L56,2 L68,6Z" opacity=".3"/><path d="M50,46 L80,14 L86,24Z" opacity=".25"/><path d="M50,46 L18,18 L24,10Z" opacity=".2"/></g>
+<ellipse cx="50" cy="84" rx="32" ry="5.5" fill="#000" opacity=".5"/>
+<path d="M22,42 C22,28 36,22 50,22 C64,22 78,28 78,42 L78,48 L22,48 Z" fill="url(#ch_w)"/>
+<path d="M22,42 C22,28 36,22 50,22 L50,48 L22,48Z" fill="#000" opacity=".18"/>
+<path d="M22,42 C22,28 36,22 50,22 C64,22 78,28 78,42" fill="none" stroke="#e8b84a" stroke-width="2.2"/>
+<path d="M26,34 C30,27 38,24 48,23" stroke="#ffe2a0" stroke-width="1.4" fill="none" opacity=".6" stroke-linecap="round"/>
+<rect x="24" y="48" width="52" height="32" rx="4" fill="url(#ch_w)"/>
+<path d="M24,52 a4,4 0 0 1 4,-4 l8,0 0,32 -8,0 a4,4 0 0 1 -4,-4Z" fill="#000" opacity=".18"/>
+<rect x="24" y="48" width="52" height="5" fill="#2a1404"/>
+<rect x="31" y="44" width="6" height="36" rx="1.5" fill="url(#ch_gd)"/><rect x="31" y="44" width="2.4" height="36" fill="#fff0c0" opacity=".5"/>
+<rect x="63" y="44" width="6" height="36" rx="1.5" fill="url(#ch_gd)"/><rect x="63" y="44" width="2.4" height="36" fill="#fff0c0" opacity=".5"/>
+<rect x="43" y="48" width="14" height="14" rx="2.5" fill="url(#ch_gd)"/><rect x="43" y="48" width="14" height="5" rx="2" fill="#fff0c0" opacity=".5"/>
+<circle cx="50" cy="55" r="2.4" fill="#4a2806"/><circle cx="49.4" cy="54.4" r=".8" fill="#ffe9a8" opacity=".8"/>
+<g fill="url(#ch_gd)" stroke="#8a5c14" stroke-width=".7">
+<circle cx="33" cy="42" r="5"/><circle cx="43" cy="39" r="5.5"/><circle cx="55" cy="39" r="5.5"/><circle cx="66" cy="42" r="5"/><circle cx="49" cy="36" r="5.5"/>
+</g>
+<circle cx="47" cy="34.4" r="1.2" fill="#fff8dc"/><circle cx="41" cy="37.6" r="1" fill="#fff8dc"/><circle cx="57" cy="37.6" r="1" fill="#fff8dc"/><circle cx="32" cy="40.6" r=".9" fill="#fff8dc"/>
+<circle cx="22" cy="86" r="1.4" fill="#ffd27a" opacity=".7"/><circle cx="80" cy="88" r="1.2" fill="#ffd27a" opacity=".6"/><circle cx="86" cy="42" r="1.3" fill="#ffd27a" opacity=".6"/>
 </svg>`;
 
-// CHIP (6)
+// CHIP/SCAT2 (6) — solid gold coin (clean face so prize numbers read)
 SVGS[6] = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs>
-${rgrd('chb',[[0,'#ffe566'],[55,'#c8a000'],[100,'#6a4a00']])}
-${rgrd('che',[[0,'#fff'],[100,'#88ccff']])}
+<radialGradient id="cn_bg" cx="50%" cy="42%" r="78%"><stop offset="0%" stop-color="#481010"/><stop offset="60%" stop-color="#260505"/><stop offset="100%" stop-color="#100202"/></radialGradient>
+<radialGradient id="cn_rim" cx="40%" cy="30%" r="85%"><stop offset="0%" stop-color="#fff2bc"/><stop offset="50%" stop-color="#e8ae32"/><stop offset="100%" stop-color="#7a4c0c"/></radialGradient>
+<radialGradient id="cn_face" cx="42%" cy="34%" r="80%"><stop offset="0%" stop-color="#fff6cc"/><stop offset="55%" stop-color="#f2c044"/><stop offset="100%" stop-color="#b87c18"/></radialGradient>
 </defs>
-<!-- Outer ring -->
-<circle cx="50" cy="50" r="46" fill="#4a3600" stroke="#ffd700" stroke-width="1.5"/>
-<circle cx="50" cy="50" r="42" fill="url(#chb)" stroke="#ffe080" stroke-width="1"/>
-<circle cx="50" cy="50" r="36" fill="#3a2800" stroke="#c8a000" stroke-width="1.5"/>
-<circle cx="50" cy="50" r="30" fill="url(#chb)" opacity=".4"/>
-<!-- Notches around edge -->
-<rect x="47" y="6"  width="6" height="10" rx="2" fill="#ffe080" transform="rotate(0  50 50)"/>
-<rect x="47" y="6"  width="6" height="10" rx="2" fill="#ffe080" transform="rotate(45 50 50)"/>
-<rect x="47" y="6"  width="6" height="10" rx="2" fill="#ffe080" transform="rotate(90 50 50)"/>
-<rect x="47" y="6"  width="6" height="10" rx="2" fill="#ffe080" transform="rotate(135 50 50)"/>
-<rect x="47" y="6"  width="6" height="10" rx="2" fill="#ffe080" transform="rotate(180 50 50)"/>
-<rect x="47" y="6"  width="6" height="10" rx="2" fill="#ffe080" transform="rotate(225 50 50)"/>
-<rect x="47" y="6"  width="6" height="10" rx="2" fill="#ffe080" transform="rotate(270 50 50)"/>
-<rect x="47" y="6"  width="6" height="10" rx="2" fill="#ffe080" transform="rotate(315 50 50)"/>
-<!-- Lightning bolt -->
-<path d="M54,22 L44,48 L52,48 L46,78 L64,46 L56,46 L62,22Z" fill="url(#che)" stroke="#88aaff" stroke-width=".8"/>
-<!-- Shine -->
-<ellipse cx="38" cy="34" rx="7" ry="4" fill="#fff" opacity=".25" transform="rotate(-30 38 34)"/>
+<rect width="100" height="100" fill="url(#cn_bg)"/>
+<circle cx="50" cy="53" r="38" fill="#ffd27a" opacity=".13"/>
+<path d="M42,11 q8,-6 16,0 l-3,8 q-5,-3 -10,0 Z" fill="#c81e32"/>
+<path d="M40,13 q-10,4 -12,13 l8,2 q2,-7 8,-9 Z" fill="#a01226"/><path d="M60,13 q10,4 12,13 l-8,2 q-2,-7 -8,-9 Z" fill="#a01226"/>
+<circle cx="50" cy="55" r="33" fill="#5a3408"/>
+<circle cx="50" cy="54" r="33" fill="url(#cn_rim)"/>
+<circle cx="50" cy="54" r="33" fill="none" stroke="#6a4208" stroke-width="1.2"/>
+<circle cx="50" cy="54" r="25" fill="url(#cn_face)"/>
+<circle cx="50" cy="54" r="25" fill="none" stroke="#8a5c14" stroke-width="1"/>
+<circle cx="50" cy="54" r="21" fill="none" stroke="#a87618" stroke-width=".8" opacity=".6"/>
+<path d="M24,40 A33,33 0 0 1 42,23" stroke="#fff8d8" stroke-width="3" fill="none" opacity=".65" stroke-linecap="round"/>
+<path d="M76,68 A33,33 0 0 1 60,84" stroke="#6a4208" stroke-width="2.4" fill="none" opacity=".6" stroke-linecap="round"/>
 </svg>`;
 
-// Card helper
-function makeCard(letter, c1, c2, accent) {
+// Royal helper — transparent bg, beveled serif letterform, gem-tone core.
+// Times New Roman has lining figures: digits match capital height.
+function makeRoyal(letter, c1, c2) {
+  const sp = letter.length > 1 ? 'letter-spacing="-4"' : '';
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs>
-${grd(`crd_${letter}`,[[0,c1],[100,c2]],0,0,0,1)}
+<linearGradient id="ry_${letter}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c1}"/><stop offset="46%" stop-color="${c1}"/><stop offset="54%" stop-color="${c2}"/><stop offset="100%" stop-color="${c2}"/></linearGradient>
+<linearGradient id="ryg_${letter}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff0b8"/><stop offset="50%" stop-color="#e8b84a"/><stop offset="100%" stop-color="#8a5c14"/></linearGradient>
 </defs>
-<rect x="6" y="6" width="88" height="88" rx="11" fill="url(#crd_${letter})" stroke="${accent}" stroke-width="2"/>
-<rect x="11" y="11" width="78" height="78" rx="8" fill="none" stroke="${accent}44" stroke-width="1.2"/>
-<path d="M6,20 Q6,6 20,6" fill="none" stroke="${accent}" stroke-width="1.5" opacity=".6"/>
-<path d="M80,6 Q94,6 94,20" fill="none" stroke="${accent}" stroke-width="1.5" opacity=".6"/>
-<path d="M6,80 Q6,94 20,94" fill="none" stroke="${accent}" stroke-width="1.5" opacity=".6"/>
-<path d="M80,94 Q94,94 94,80" fill="none" stroke="${accent}" stroke-width="1.5" opacity=".6"/>
-<path d="M34,84 Q40,72 38,64 Q45,74 44,58 Q50,70 56,58 Q55,74 62,64 Q60,72 66,84Z" fill="#ff6600" opacity=".35"/>
-<path d="M39,84 Q44,74 42,68 Q48,75 50,68 Q52,75 58,68 Q56,74 61,84Z" fill="#ffcc00" opacity=".3"/>
-<text x="50" y="63" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black" font-size="42" fill="${accent}" font-weight="900" stroke="#00000044" stroke-width="1.5">${letter}</text>
+<text x="50" y="74" text-anchor="middle" font-family="'Times New Roman',serif" font-weight="900" font-size="64" ${sp} fill="#000" opacity=".5" transform="translate(2.5,3)">${letter}</text>
+<text x="50" y="74" text-anchor="middle" font-family="'Times New Roman',serif" font-weight="900" font-size="64" ${sp} fill="url(#ry_${letter})" stroke="url(#ryg_${letter})" stroke-width="1.8" paint-order="stroke">${letter}</text>
 </svg>`;
 }
-SVGS[7]  = makeCard('A',  '#440000','#220000','#ffd700');
-SVGS[8]  = makeCard('K',  '#003300','#001a00','#44ff88');
-SVGS[9]  = makeCard('Q',  '#000044','#000022','#88aaff');
-SVGS[10] = makeCard('J',  '#331100','#1a0800','#ff8844');
-SVGS[11] = makeCard('10', '#3a1a00','#1a0a00','#ffcc44');
-SVGS[12] = makeCard('9',  '#1a1a2a','#0a0a14','#aaaacc');
+SVGS[7]  = makeRoyal('A',  '#ffd05a', '#8a5510');
+SVGS[8]  = makeRoyal('K',  '#ff5a6a', '#8a0a1c');
+SVGS[9]  = makeRoyal('Q',  '#c08aff', '#4a1a8a');
+SVGS[10] = makeRoyal('J',  '#6aa8ff', '#10306a');
+SVGS[11] = makeRoyal('10', '#5ae8a0', '#0a6a3a');
+SVGS[12] = makeRoyal('9',  '#ffd05a', '#8a5510');
 
-// BIG CHIP (used in H&S display) — reuse CHIP with glow ring
+// BIG CHIP (H&S display) — solid coin with alert ring
 SVGS['BIG_CHIP'] = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs>
-${rgrd('bchb',[[0,'#ffffff'],[30,'#ffeebb'],[70,'#e0a800'],[100,'#7a5000']])}
+<radialGradient id="bch_rim" cx="40%" cy="30%" r="85%"><stop offset="0%" stop-color="#fff2bc"/><stop offset="50%" stop-color="#e8ae32"/><stop offset="100%" stop-color="#7a4c0c"/></radialGradient>
+<radialGradient id="bch_face" cx="42%" cy="34%" r="80%"><stop offset="0%" stop-color="#fff6cc"/><stop offset="55%" stop-color="#f2c044"/><stop offset="100%" stop-color="#b87c18"/></radialGradient>
 </defs>
-<circle cx="50" cy="50" r="48" fill="none" stroke="#ff0000" stroke-width="3" opacity=".7" stroke-dasharray="8 4"/>
-<circle cx="50" cy="50" r="44" fill="#5a3a00" stroke="#ffd700" stroke-width="2"/>
-<circle cx="50" cy="50" r="40" fill="url(#bchb)" stroke="#ffe080" stroke-width="1.5"/>
-<circle cx="50" cy="50" r="32" fill="#3a2400" stroke="#c8a000" stroke-width="1.5"/>
-<circle cx="50" cy="50" r="26" fill="url(#bchb)" opacity=".4"/>
-<rect x="47" y="4"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(0   50 50)"/>
-<rect x="47" y="4"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(60  50 50)"/>
-<rect x="47" y="4"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(120 50 50)"/>
-<rect x="47" y="4"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(180 50 50)"/>
-<rect x="47" y="4"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(240 50 50)"/>
-<rect x="47" y="4"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(300 50 50)"/>
-<path d="M54,22 L44,48 L52,48 L46,78 L64,46 L56,46 L62,22Z" fill="#fff" stroke="#88aaff" stroke-width=".8"/>
+<circle cx="50" cy="50" r="48" fill="none" stroke="#ff3030" stroke-width="3" opacity=".75" stroke-dasharray="9 5"/>
+<circle cx="50" cy="51" r="42" fill="#5a3408"/>
+<circle cx="50" cy="50" r="42" fill="url(#bch_rim)"/>
+<circle cx="50" cy="50" r="42" fill="none" stroke="#6a4208" stroke-width="1.2"/>
+<circle cx="50" cy="50" r="32" fill="url(#bch_face)"/>
+<circle cx="50" cy="50" r="32" fill="none" stroke="#8a5c14" stroke-width="1"/>
+<path d="M18,32 A42,42 0 0 1 40,12" stroke="#fff8d8" stroke-width="3.4" fill="none" opacity=".65" stroke-linecap="round"/>
 </svg>`;
 
 // ═══════════════════════════════════════════════════════════
@@ -923,21 +917,17 @@ function renderChipWithPrize(prize) {
   if (prize.type === 'credits') label = `${prize.val}×`;
   else if (prize.type === 'partOfBig') label = '';
   else label = prize.type.toUpperCase();
-  const color = prize.type === 'major' ? '#ffd700' : prize.type === 'minor' ? '#c8c8c8' : prize.type === 'mini' ? '#cd7f32' : '#ffd700';
+  const color = prize.type === 'major' ? '#ffd95a' : prize.type === 'minor' ? '#e8e8f0' : prize.type === 'mini' ? '#ffb070' : '#fff6cc';
+  const fs = label.length > 4 ? 15 : 24;
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-<defs><radialGradient id="cpz" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#ffe566"/><stop offset="55%" stop-color="#c8a000"/><stop offset="100%" stop-color="#6a4a00"/></radialGradient></defs>
-<circle cx="50" cy="50" r="46" fill="#4a3600" stroke="#ffd700" stroke-width="1.5"/>
-<circle cx="50" cy="50" r="42" fill="url(#cpz)" stroke="#ffe080" stroke-width="1"/>
-<circle cx="50" cy="50" r="36" fill="#3a2800" stroke="#c8a000" stroke-width="1.5"/>
-<rect x="47" y="6"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(0   50 50)"/>
-<rect x="47" y="6"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(45  50 50)"/>
-<rect x="47" y="6"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(90  50 50)"/>
-<rect x="47" y="6"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(135 50 50)"/>
-<rect x="47" y="6"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(180 50 50)"/>
-<rect x="47" y="6"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(225 50 50)"/>
-<rect x="47" y="6"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(270 50 50)"/>
-<rect x="47" y="6"  width="6" height="9" rx="2" fill="#ffe080" transform="rotate(315 50 50)"/>
-<text x="50" y="55" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black" font-size="${label.length>4?10:13}" font-weight="900" fill="${color}" stroke="#1a0a00" stroke-width="1">${label}</text>
+<defs><radialGradient id="cpz" cx="40%" cy="30%" r="85%"><stop offset="0%" stop-color="#fff2bc"/><stop offset="50%" stop-color="#e8ae32"/><stop offset="100%" stop-color="#7a4c0c"/></radialGradient></defs>
+<circle cx="50" cy="51" r="46" fill="#5a3408"/>
+<circle cx="50" cy="50" r="46" fill="url(#cpz)"/>
+<circle cx="50" cy="50" r="46" fill="none" stroke="#6a4208" stroke-width="1.2"/>
+<circle cx="50" cy="50" r="36" fill="#241204"/>
+<circle cx="50" cy="50" r="36" fill="none" stroke="#ffe9a8" stroke-width="1.4"/>
+<path d="M16,34 A46,46 0 0 1 38,9" stroke="#fff8d8" stroke-width="3.4" fill="none" opacity=".6" stroke-linecap="round"/>
+<text x="50" y="51" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial,sans-serif" font-size="${fs}" font-weight="900" fill="${color}">${label}</text>
 </svg>`;
 }
 
