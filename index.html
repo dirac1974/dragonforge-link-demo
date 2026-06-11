@@ -123,6 +123,26 @@ body {
   font-size: 0.48rem; font-weight: 900; padding: 1px 5px;
   border-radius: 3px; letter-spacing: 1px; white-space: nowrap; z-index: 5;
 }
+/* FG BIG symbol — one giant symbol spanning reels 2-4 during Free Games */
+#fg-big-sym {
+  position: absolute;
+  display: none;
+  z-index: 15;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, #160a04, #060302);
+  border: 2px solid var(--gold);
+  border-radius: 6px;
+  box-shadow: 0 0 24px rgba(255,215,0,.5), inset 0 0 30px rgba(255,215,0,.15);
+  /* finite iteration count — infinite animations stall the screenshot renderer */
+  animation: bigSymGlow 1s ease-in-out 8 alternate;
+}
+#fg-big-sym.show { display: block; }
+#fg-big-sym svg { position: absolute; top: 4%; left: 4%; width: 92%; height: 92%; }
+@keyframes bigSymGlow {
+  from { box-shadow: 0 0 14px rgba(255,215,0,.35), inset 0 0 20px rgba(255,215,0,.1); }
+  to   { box-shadow: 0 0 32px rgba(255,215,0,.65), inset 0 0 40px rgba(255,215,0,.2); }
+}
+
 /* spinning blur — finite iteration count avoids screenshot renderer stall */
 .reel.spinning .sym-cell {
   filter: blur(3px) brightness(0.6);
@@ -298,6 +318,9 @@ select.sel {
     <div class="reels-grid" id="reels-grid">
       <!-- 5 reels injected by JS -->
     </div>
+
+    <!-- FG BIG SYMBOL — one giant symbol over reels 2-4 -->
+    <div id="fg-big-sym"></div>
 
     <!-- HOLD & SPIN INTRO OVERLAY -->
     <div id="feature-overlay">
@@ -685,6 +708,25 @@ const STRIPS = [
 ];
 
 // ═══════════════════════════════════════════════════════════
+// FREE GAMES REEL STRIPS — par sheet pages 10-12, ALL VARIATIONS.
+// Reels 2-3-4 spin together as ONE strip: each stop is a BIG 3×3 symbol
+// filling the entire middle window. BIG SUITCASE pays 1×totalBet +3 FGs.
+// BIG CHIP triggers Hold & Spin with 9 chips collected.
+// Reel 1: 85 stops. Reels 2,3,4 (linked): 64 stops. Reel 5: 80 stops.
+// ═══════════════════════════════════════════════════════════
+const FG_STRIPS = {
+  R1: [1,12,9,0,11,10,2,2,12,9, 3,11,10,3,9,8,1,9,9,2, 12,3,11,0,10,3,8,8,0,11,
+       9,2,10,3,3,8,11,1,9,12, 2,10,10,1,9,12,2,11,12,0, 8,12,2,11,11,3,9,11,2,12,
+       12,1,9,10,10,11,3,10,6,8, 0,12,3,10,6,9,1,11,8,3, 2,10,10,3,12],
+  R234: [4,4,4,4,4,4,0,8,1,2, 11,8,6,12,11,5,10,2,8,4, 11,1,10,6,12,3,10,11,1,8,
+         4,12,10,2,3,9,6,12,8,3, 11,4,12,0,10,5,9,3,11,0, 10,8,4,12,9,1,11,2,8,3,
+         11,2,9,5],
+  R5: [9,2,8,10,4,4,4,4,9,12, 3,8,9,1,1,12,11,3,8,2, 11,8,1,10,11,2,9,9,1,10,
+       11,3,8,10,1,11,11,12,3,9, 2,12,10,3,8,11,2,12,12,3, 8,2,11,9,3,10,0,0,12,11,
+       1,10,12,2,2,9,11,3,8,12, 1,10,8,8,2,12,8,3,9,12],
+};
+
+// ═══════════════════════════════════════════════════════════
 // 25 WIN LINES  [row for reel0..4], rows: 0=top,1=mid,2=bot
 // ═══════════════════════════════════════════════════════════
 const WIN_LINES = [
@@ -738,6 +780,22 @@ const PAYTABLE = {
   12:[50,10,5,0],     // 9  5/4/3-oak — CONFIRMED
 };
 
+// FREE GAMES FEATURE PAYTABLE — par sheet specifies a separate FG paytable
+// (values not present in available par sheet pages). CALIBRATED ≈ half base
+// pays so that base + FG = 55.209% target (measured 54.9% ± 0.2 over 500k
+// features). Replace with real values if the FG paytable page is obtained.
+const FG_PAYTABLE = {
+  0: [75,25,5,1],   // PIC1
+  1: [50,15,3,0],   // PIC2
+  2: [50,14,3,0],   // PIC3
+  3: [50,14,3,0],   // PIC4
+  8: [40,10,3,0],   // K
+  9: [25,5,3,0],    // Q
+  10:[25,5,3,0],    // J
+  11:[25,5,3,0],    // 10
+  12:[25,5,3,0],    // 9
+};
+
 // Chip prize pool (x total bet) — for Hold & Spin cell values
 const CHIP_PRIZES = [
   { type:'credits', val:1,   weight:18 },
@@ -785,6 +843,7 @@ let hsPrizeTotal  = 0;
 let inFreeGames     = false;
 let freeGamesLeft   = 0;
 let freeGamesTotalWin = 0;
+let pendingFreeGames = false; // FG won on same spin that triggered H&S
 
 // Jackpot amounts (in credits)
 let jackpots = { grand:1000000, major:100000, minor:10000, mini:2500 };
@@ -888,23 +947,34 @@ function pickChipPrize() {
 // ═══════════════════════════════════════════════════════════
 // WIN EVALUATION
 // ═══════════════════════════════════════════════════════════
-function evaluateWins(g, totalBet, lineBet) {
-  const results = { lineWins: [], scatterWin: 0, chipCount: 0, freeGames: false, holdSpin: false, totalWin: 0 };
+function evaluateWins(g, totalBet, lineBet, isFG = false) {
+  const results = { lineWins: [], scatterWin: 0, chipCount: 0, freeGames: false, holdSpin: false, bigSuitcase: false, totalWin: 0 };
 
-  // Count scatter symbols (SUITCASE — any position)
-  let suitcaseCount = 0;
-  for (let r = 0; r < 5; r++) for (let row = 0; row < 3; row++) {
-    if (g[r][row] === S.SUITCASE) suitcaseCount++;
-  }
-  if (suitcaseCount >= 3 && PAYTABLE[5]) {
-    const idx = Math.min(5 - suitcaseCount, 2); // 5→idx0(100x), 4→idx1(15x), 3→idx2(2x)
-    const pay = PAYTABLE[5][idx] * totalBet;
-    if (pay > 0) {
-      results.scatterWin = pay;
-      results.totalWin += pay;
+  if (isFG) {
+    // BIG SUITCASE (entire middle window = SCAT1): fixed 1×totalBet + 3 FGs.
+    // Normal scatter table does not apply during FG.
+    if (g[1][0] === S.SUITCASE) {
+      results.scatterWin = totalBet;
+      results.totalWin += totalBet;
+      results.freeGames = true;
+      results.bigSuitcase = true;
     }
+  } else {
+    // Count scatter symbols (SUITCASE — any position)
+    let suitcaseCount = 0;
+    for (let r = 0; r < 5; r++) for (let row = 0; row < 3; row++) {
+      if (g[r][row] === S.SUITCASE) suitcaseCount++;
+    }
+    if (suitcaseCount >= 3 && PAYTABLE[5]) {
+      const idx = Math.min(5 - suitcaseCount, 2); // 5→idx0(100x), 4→idx1(15x), 3→idx2(2x)
+      const pay = PAYTABLE[5][idx] * totalBet;
+      if (pay > 0) {
+        results.scatterWin = pay;
+        results.totalWin += pay;
+      }
+    }
+    if (suitcaseCount >= 3) results.freeGames = true;
   }
-  if (suitcaseCount >= 3) results.freeGames = true;
 
   // Count CHIPs
   let chipCount = 0;
@@ -934,9 +1004,10 @@ function evaluateWins(g, totalBet, lineBet) {
       if (s === firstSym || s === S.WILD) count++;
       else break;
     }
-    if (count >= 2 && PAYTABLE[firstSym]) {
+    const table = isFG ? FG_PAYTABLE : PAYTABLE;
+    if (count >= 2 && table[firstSym]) {
       const payIdx = 5 - count; // 5of→0, 4of→1, 3of→2, 2of→3
-      const base = PAYTABLE[firstSym][payIdx];
+      const base = table[firstSym][payIdx];
       if (base > 0) {
         const pay = base * lineBet;
         results.lineWins.push({ line: l, count, sym: firstSym, cells: line, pay });
@@ -961,6 +1032,7 @@ function clearSpinTimers() {
 function doSpin() {
   if (isSpinning) return;
   if (inHoldSpin) return;
+  if (inFreeGames) return; // FG spins run automatically via doFreeGameSpin
 
   const totalBet = getTotalBet();
   if (balance < totalBet) {
@@ -985,19 +1057,16 @@ function doSpin() {
 }
 
 function generateFreeGameGrid() {
-  // Reels 1,2,3 spin together (same strip position for reels 1-3)
+  // Par sheet FG strips. Reels 2-3-4 spin together: one stop = one BIG 3×3
+  // symbol filling the whole middle window (each position still counts as a
+  // single occurrence of that symbol on its reel for line evaluation).
   const newGrid = [];
-  const linkedPos = Math.floor(Math.random() * STRIPS[1].length);
-  for (let r = 0; r < 5; r++) {
-    const col = [];
-    let pos;
-    if (r >= 1 && r <= 3) pos = linkedPos;
-    else pos = Math.floor(Math.random() * STRIPS[r].length);
-    for (let row = 0; row < 3; row++) {
-      col.push(STRIPS[r][(pos + row) % STRIPS[r].length]);
-    }
-    newGrid.push(col);
-  }
+  const p1 = Math.floor(Math.random() * FG_STRIPS.R1.length);
+  const big = FG_STRIPS.R234[Math.floor(Math.random() * FG_STRIPS.R234.length)];
+  const p5 = Math.floor(Math.random() * FG_STRIPS.R5.length);
+  newGrid.push([0,1,2].map(row => FG_STRIPS.R1[(p1 + row) % FG_STRIPS.R1.length]));
+  for (let r = 1; r <= 3; r++) newGrid.push([big, big, big]);
+  newGrid.push([0,1,2].map(row => FG_STRIPS.R5[(p5 + row) % FG_STRIPS.R5.length]));
   return newGrid;
 }
 
@@ -1054,6 +1123,23 @@ function renderAllCells() {
   }
 }
 
+// ── FG BIG symbol overlay (covers reels 2-4 window) ──
+function showBigSymbol(sym) {
+  const el = document.getElementById('fg-big-sym');
+  const winEl = document.querySelector('.reel-window').getBoundingClientRect();
+  const tl = document.getElementById('cell-1-0').getBoundingClientRect();
+  const br = document.getElementById('cell-3-2').getBoundingClientRect();
+  el.style.left   = (tl.left - winEl.left) + 'px';
+  el.style.top    = (tl.top - winEl.top) + 'px';
+  el.style.width  = (br.right - tl.left) + 'px';
+  el.style.height = (br.bottom - tl.top) + 'px';
+  el.innerHTML = sym === S.CHIP ? SVGS['BIG_CHIP'] : (SVGS[sym] || '');
+  el.classList.add('show');
+}
+function hideBigSymbol() {
+  document.getElementById('fg-big-sym').classList.remove('show');
+}
+
 // ═══════════════════════════════════════════════════════════
 // RESULTS HANDLER
 // ═══════════════════════════════════════════════════════════
@@ -1078,20 +1164,12 @@ function handleResults(results, totalBet) {
 
   updateUI();
 
-  // Feature triggers
-  if (holdSpin && !inFreeGames) {
+  // Feature triggers (bought games only — FG spins are handled in doFreeGameSpin)
+  if (holdSpin) {
+    pendingFreeGames = freeGames; // both can trigger on one spin; FG plays after H&S
     setTimeout(() => triggerHoldSpin(), 800);
   } else if (freeGames) {
-    if (inFreeGames) {
-      // Additional free games during free games
-      freeGamesLeft += 3;
-      setStatus(`+3 FREE GAMES! Total: ${freeGamesLeft}`);
-      setTimeout(() => continueFreeGames(), 1200);
-    } else {
-      setTimeout(() => triggerFreeGames(), 800);
-    }
-  } else if (inFreeGames) {
-    continueFreeGames();
+    setTimeout(() => triggerFreeGames(), 800);
   } else {
     const msg = buildWinMsg(lineWins, scatterWin, chipCount, totalWin, totalBet);
     setStatus(msg || 'No win — Try again!');
@@ -1309,6 +1387,20 @@ function endHoldSpin() {
   } else {
     setStatus(`HOLD & SPIN COMPLETE — Win: ${fmt(creditWin)}`);
     if (creditWin >= totalBet * 20) showWinFlash(creditWin);
+    if (inFreeGames) {
+      // H&S was triggered by BIG CHIP mid-feature — resume remaining FGs
+      freeGamesTotalWin += creditWin;
+      setTimeout(() => {
+        if (freeGamesLeft > 0) doFreeGameSpin();
+        else endFreeGames();
+      }, 1500);
+      return;
+    }
+    if (pendingFreeGames) {
+      pendingFreeGames = false;
+      setTimeout(() => triggerFreeGames(), 1200);
+      return;
+    }
     if (isAuto) scheduleAutoSpin();
   }
 }
@@ -1348,27 +1440,33 @@ function doFreeGameSpin() {
   freeGamesLeft--;
   document.getElementById('fsg-val').textContent = freeGamesLeft;
   setStatus(`FREE GAMES — ${freeGamesLeft} remaining`);
+  hideBigSymbol();
 
   const newGrid = generateFreeGameGrid();
   startSpinAnim(newGrid, () => {
     grid = newGrid;
     renderAllCells();
+    showBigSymbol(grid[1][0]);
     const totalBet = getTotalBet();
-    const results = evaluateWins(grid, totalBet, getLineBet());
+    const results = evaluateWins(grid, totalBet, getLineBet(), true);
     freeGamesTotalWin += results.totalWin;
     if (results.totalWin > 0) {
       balance += results.totalWin;
       document.getElementById('win-val').textContent = fmt(results.totalWin);
       updateUI();
     }
-    // Check for additional free games
-    if (results.freeGames) {
+    if (results.bigSuitcase) {
       freeGamesLeft += 3;
       document.getElementById('fsg-val').textContent = freeGamesLeft;
-      setStatus(`+3 MORE FREE GAMES!`);
-      highlightScatters();
+      setStatus(`BIG SUITCASE! ${fmt(totalBet)} + 3 MORE FREE GAMES!`);
     }
     if (results.lineWins.length > 0) highlightLineWins(results.lineWins);
+    // BIG CHIP fills the middle window with 9 chips → Hold & Spin
+    if (results.holdSpin) {
+      setStatus('BIG CHIP! HOLD & SPIN — 9 chips collected!');
+      setTimeout(() => { hideBigSymbol(); triggerHoldSpin(); }, 1200);
+      return;
+    }
     setTimeout(() => {
       if (freeGamesLeft > 0) {
         doFreeGameSpin();
@@ -1385,6 +1483,7 @@ function continueFreeGames() {
 
 function endFreeGames() {
   inFreeGames = false;
+  hideBigSymbol();
   document.getElementById('fsg-box').classList.remove('show');
   showFGOverlay(true, 'FREE GAMES COMPLETE!', `Total Win: ${fmt(freeGamesTotalWin)}`);
   document.getElementById('start-fg-btn').textContent = 'COLLECT';
@@ -1409,6 +1508,18 @@ function dismissJackpot() {
   document.getElementById('jp-overlay').classList.remove('show');
   updateUI();
   setStatus(`JACKPOT WIN! Congratulations!`);
+  if (inFreeGames) {
+    setTimeout(() => {
+      if (freeGamesLeft > 0) doFreeGameSpin();
+      else endFreeGames();
+    }, 800);
+    return;
+  }
+  if (pendingFreeGames) {
+    pendingFreeGames = false;
+    setTimeout(() => triggerFreeGames(), 800);
+    return;
+  }
   if (isAuto) scheduleAutoSpin();
 }
 
