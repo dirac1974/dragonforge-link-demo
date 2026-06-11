@@ -143,15 +143,39 @@ body {
   to   { box-shadow: 0 0 32px rgba(255,215,0,.65), inset 0 0 40px rgba(255,215,0,.2); }
 }
 
-/* spinning blur — finite iteration count avoids screenshot renderer stall */
+/* spinning — symbols stream downward via JS; light blur sells the motion.
+   finite iteration counts avoid screenshot renderer stall */
 .reel.spinning .sym-cell {
-  filter: blur(3px) brightness(0.6);
-  animation: spinRow .1s linear 999;
+  filter: blur(1.6px) brightness(0.82) saturate(.9);
+  animation: spinRow .09s linear 999;
 }
 @keyframes spinRow {
-  0%   { transform: translateY(0px);  }
-  50%  { transform: translateY(-8px); }
-  100% { transform: translateY(0px);  }
+  0%   { transform: translateY(-6px); }
+  100% { transform: translateY(6px);  }
+}
+/* stop bounce — reel overshoots downward then springs back */
+.reel.bounce { animation: reelBounce .42s cubic-bezier(.2,.8,.3,1.2) 1; }
+@keyframes reelBounce {
+  0%   { transform: translateY(-16px); }
+  55%  { transform: translateY(7px);   }
+  80%  { transform: translateY(-3px);  }
+  100% { transform: translateY(0);     }
+}
+/* stacked dragon overlay — grows in over 2-3 vertically stacked PIC1 cells */
+.dragon-stack {
+  position: absolute;
+  z-index: 14;
+  pointer-events: none;
+  border-radius: 4px;
+  overflow: hidden;
+  transform-origin: top center;
+  box-shadow: 0 0 20px rgba(255,180,60,.55), inset 0 0 24px rgba(255,215,120,.12);
+  animation: stackGrow .55s cubic-bezier(.2,1.4,.4,1) 1;
+}
+.dragon-stack svg { display: block; width: 100%; height: 100%; }
+@keyframes stackGrow {
+  0%   { transform: scaleY(.5);  opacity: 0; }
+  100% { transform: scaleY(1);   opacity: 1; }
 }
 
 /* ── STATUS / INFO ── */
@@ -1095,6 +1119,7 @@ function doSpin() {
   startSpinAnim(newGrid, () => {
     grid = newGrid;
     renderAllCells();
+    showDragonStacks();
     const results = evaluateWins(grid, totalBet, getLineBet());
     handleResults(results, totalBet);
   });
@@ -1114,9 +1139,32 @@ function generateFreeGameGrid() {
   return newGrid;
 }
 
+// Per-reel scroll intervals: symbols stream downward while spinning
+let scrollIntervals = Array(5).fill(null);
+let visBuf = Array.from({length:5}, () => [12, 11, 10]);
+
+function visStrip(r) {
+  if (inFreeGames) return r === 0 ? FG_STRIPS.R1 : r === 4 ? FG_STRIPS.R5 : FG_STRIPS.R234;
+  return STRIPS[r];
+}
+
 function startSpinAnim(finalGrid, onDone) {
   isSpinning = true;
   setSpin(true);
+  clearDragonStacks();
+
+  for (let r = 0; r < 5; r++) {
+    visBuf[r] = [grid[r][0], grid[r][1], grid[r][2]];
+    const strip = visStrip(r);
+    clearInterval(scrollIntervals[r]);
+    scrollIntervals[r] = setInterval(() => {
+      // shift down: top row gets a fresh strip symbol
+      visBuf[r][2] = visBuf[r][1];
+      visBuf[r][1] = visBuf[r][0];
+      visBuf[r][0] = strip[Math.floor(Math.random() * strip.length)];
+      for (let row = 0; row < 3; row++) renderCell(r, row, visBuf[r][row]);
+    }, 75);
+  }
 
   const stopDelays = [700, 1000, 1300, 1600, 1900];
   let stoppedCount = 0;
@@ -1136,19 +1184,24 @@ function startSpinAnim(finalGrid, onDone) {
 }
 
 function stopReel(r, finalSyms) {
+  clearInterval(scrollIntervals[r]);
+  scrollIntervals[r] = null;
   const reelEl = document.getElementById(`reel-${r}`);
   reelEl.classList.remove('spinning');
-  // Show final symbols briefly blurred then snap
   for (let row = 0; row < 3; row++) {
     const cell = document.getElementById(`cell-${r}-${row}`);
     cell.style.filter = '';
     cell.style.transform = '';
   }
-  // Update display with final symbols
+  // Land final symbols with the classic overshoot bounce
   for (let row = 0; row < 3; row++) {
     grid[r][row] = finalSyms[row];
     renderCell(r, row, finalSyms[row]);
   }
+  reelEl.classList.remove('bounce');
+  void reelEl.offsetWidth; // restart animation if reel bounced last spin
+  reelEl.classList.add('bounce');
+  setTimeout(() => reelEl.classList.remove('bounce'), 450);
 }
 
 function setSpin(on) {
@@ -1182,6 +1235,84 @@ function showBigSymbol(sym) {
 }
 function hideBigSymbol() {
   document.getElementById('fg-big-sym').classList.remove('show');
+}
+
+// ── STACKED DRAGON — vertical runs of 2-3 PIC1 merge into one tall dragon ──
+// (With par-exact strips, adjacent PIC1 stops occur on the FG reel 5 strip.)
+function tallDragonSVG(n) {
+  const H = n * 100;
+  const body = n === 2
+    ? 'M40,72 C12,108 84,128 52,162 C42,172 34,178 30,186'
+    : 'M40,72 C10,116 86,148 48,198 C20,234 72,256 42,286';
+  const fins = n === 2
+    ? [[24,104],[70,124],[52,154]]
+    : [[22,110],[74,146],[52,192],[38,232],[58,256]];
+  const finPaths = fins.map(([x,y]) =>
+    `<path d="M${x},${y} l8,-12 l4,10 Z" fill="url(#tdr_g2)"/>`).join('');
+  return `<svg viewBox="0 0 100 ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+<defs>
+<radialGradient id="tdr_bg" cx="55%" cy="20%" r="95%"><stop offset="0%" stop-color="#8a1a12"/><stop offset="55%" stop-color="#4a0a06"/><stop offset="100%" stop-color="#1c0302"/></radialGradient>
+<linearGradient id="tdr_g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff0bc"/><stop offset="40%" stop-color="#f0b440"/><stop offset="100%" stop-color="#8a4c0e"/></linearGradient>
+<linearGradient id="tdr_g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c98a28"/><stop offset="100%" stop-color="#5a3008"/></linearGradient>
+</defs>
+<rect width="100" height="${H}" fill="url(#tdr_bg)"/>
+<g opacity=".12" stroke="#ffd27a" stroke-width="1"><line x1="50" y1="40" x2="96" y2="6"/><line x1="50" y1="40" x2="4" y2="10"/><line x1="50" y1="${H-30}" x2="92" y2="${H-6}"/><line x1="50" y1="${H-30}" x2="8" y2="${H-8}"/></g>
+<ellipse cx="50" cy="${H/2}" rx="42" ry="${H/2-8}" fill="#ffd27a" opacity=".08"/>
+<path d="${body}" fill="none" stroke="#3a1c04" stroke-width="17" stroke-linecap="round" opacity=".6"/>
+<path d="${body}" fill="none" stroke="url(#tdr_g)" stroke-width="14" stroke-linecap="round"/>
+<path d="${body}" fill="none" stroke="#fff3c8" stroke-width="3" stroke-linecap="round" opacity=".45" stroke-dasharray="10 14"/>
+${finPaths}
+<path d="M${n===2?30:42},${H-14} q-10,6 -18,2 q6,8 16,6 q-2,6 4,6 q4,-6 4,-12 Z" fill="url(#tdr_g2)"/>
+<g>
+<path d="M30,30 Q22,18 30,8 Q32,20 40,24 Q30,28 30,30Z" fill="url(#tdr_g2)"/>
+<path d="M42,26 Q40,12 50,4 Q48,16 56,22 Q46,24 42,26Z" fill="url(#tdr_g2)"/>
+<path d="M36,52 Q42,32 58,30 Q74,28 82,40 Q88,48 84,54 Q80,58 70,57 L52,60 Q40,60 36,52Z" fill="url(#tdr_g)"/>
+<path d="M50,58 Q62,57 72,56 Q80,56 84,52 Q82,57 74,58 L52,60 Q44,60 40,56 Q45,59 50,58Z" fill="#5a3008" opacity=".55"/>
+<path d="M40,44 Q46,33 58,31 Q70,30 78,38" stroke="#fff3c8" stroke-width="1.6" fill="none" opacity=".55" stroke-linecap="round"/>
+<path d="M52,60 Q62,68 76,64 Q70,74 56,72 Q48,70 48,64 Z" fill="url(#tdr_g2)"/>
+<path d="M82,42 q6,-3 4,3 q-2,4 -6,2" fill="#7a4410"/>
+<path d="M44,40 Q54,32 66,36" stroke="#7a4410" stroke-width="3" fill="none" stroke-linecap="round"/>
+<circle cx="58" cy="44" r="6.5" fill="#0a2a26"/><circle cx="58" cy="44" r="4.2" fill="#22e8c8"/><ellipse cx="58" cy="44" rx="1.4" ry="3.4" fill="#06201c"/><circle cx="56.4" cy="42" r="1.3" fill="#fff"/>
+<path d="M54,34 C50,22 58,14 68,12 C61,20 60,27 62,33 Z" fill="url(#tdr_g)"/>
+<path d="M66,35 C66,24 74,18 84,18 C76,25 74,30 74,37 Z" fill="url(#tdr_g2)"/>
+<path d="M86,48 C94,44 97,36 94,26" stroke="#f0c25a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<path d="M84,56 C94,58 98,66 96,78" stroke="#f0c25a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<path d="M70,60 l3,6 l4,-5 Z" fill="#fff8e0"/><path d="M62,61 l2,5 l4,-4 Z" fill="#fff8e0"/>
+</g>
+</svg>`;
+}
+
+function clearDragonStacks() {
+  document.querySelectorAll('.dragon-stack').forEach(e => e.remove());
+}
+
+function showDragonStacks() {
+  clearDragonStacks();
+  const winEl = document.querySelector('.reel-window');
+  const winRect = winEl.getBoundingClientRect();
+  for (let r = 0; r < 5; r++) {
+    if (inFreeGames && r >= 1 && r <= 3) continue; // middle covered by BIG symbol
+    let row = 0;
+    while (row < 3) {
+      if (grid[r][row] !== S.DRAGON) { row++; continue; }
+      let end = row;
+      while (end + 1 < 3 && grid[r][end + 1] === S.DRAGON) end++;
+      const len = end - row + 1;
+      if (len >= 2) {
+        const tl = document.getElementById(`cell-${r}-${row}`).getBoundingClientRect();
+        const br = document.getElementById(`cell-${r}-${end}`).getBoundingClientRect();
+        const el = document.createElement('div');
+        el.className = 'dragon-stack';
+        el.style.left   = (tl.left - winRect.left) + 'px';
+        el.style.top    = (tl.top - winRect.top) + 'px';
+        el.style.width  = tl.width + 'px';
+        el.style.height = (br.bottom - tl.top) + 'px';
+        el.innerHTML = tallDragonSVG(len);
+        winEl.appendChild(el);
+      }
+      row = end + 1;
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1275,6 +1406,7 @@ function triggerHoldSpin() {
   hsSpinsLeft = 3;
   hsPrizeTotal = 0;
   heldCells = {};
+  clearDragonStacks();
 
   // FG BIG CHIP: the whole middle window is one chip with ONE prize from the
   // BIG CHIP PRIZES menu, counting as 9 chips collected.
@@ -1506,6 +1638,7 @@ function doFreeGameSpin() {
     grid = newGrid;
     renderAllCells();
     showBigSymbol(grid[1][0]);
+    showDragonStacks();
     const totalBet = getTotalBet();
     const results = evaluateWins(grid, totalBet, getLineBet(), true);
     freeGamesTotalWin += results.totalWin;
