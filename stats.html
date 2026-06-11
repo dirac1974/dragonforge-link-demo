@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dragon Forge Link — High Stakes · Game Math Sheet</title>
+<style>
+:root{
+  --gold:#ffd700; --gold-dim:#c8a400; --red:#c8102e; --dark-red:#8c0a1f;
+  --bg:#060302; --panel:#0e0804; --border:#5a3a18; --ink:#e8d9b5; --muted:#9a8a6a;
+  --green:#46c26a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:radial-gradient(ellipse at 50% -10%, #1c0a04 0%, #060302 55%);
+  min-height:100vh; color:var(--ink);
+  font-family:"Segoe UI",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased; line-height:1.5; padding:0 0 60px;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 18px}
+
+/* ── HEADER ── */
+header{
+  text-align:center; padding:34px 18px 22px;
+  border-bottom:2px solid var(--border);
+  background:linear-gradient(180deg,#160a04,transparent);
+}
+.kicker{font-size:.72rem;letter-spacing:5px;color:var(--red);text-transform:uppercase;font-weight:700}
+h1{
+  font-family:"Arial Black",Arial,sans-serif; font-size:2.6rem; letter-spacing:3px;
+  color:var(--gold); line-height:1.02; margin:6px 0 2px;
+  text-shadow:0 0 22px var(--red),3px 3px 0 #44000a,-1px -1px 0 #44000a;
+}
+.subtitle{font-size:.82rem;letter-spacing:7px;color:#c8102e;text-transform:uppercase}
+.doc-tag{
+  display:inline-block;margin-top:14px;font-size:.68rem;letter-spacing:2px;color:var(--muted);
+  border:1px solid var(--border);border-radius:20px;padding:4px 14px;text-transform:uppercase;
+}
+
+/* ── SECTION ── */
+section{margin-top:34px}
+.sec-head{
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+}
+.sec-head h2{
+  font-family:"Arial Black",Arial,sans-serif;font-size:1.05rem;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;white-space:nowrap;
+}
+.sec-head::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+/* ── CARDS GRID ── */
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{
+  background:linear-gradient(160deg,#150c05,#0c0602);
+  border:1px solid var(--border);border-radius:10px;padding:14px 16px;
+}
+.card .lbl{font-size:.66rem;letter-spacing:1.6px;color:var(--muted);text-transform:uppercase}
+.card .big{font-family:"Arial Black",Arial,sans-serif;font-size:1.7rem;color:var(--gold);margin-top:4px;line-height:1.1}
+.card .sub{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+/* ── TABLE ── */
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+.card-table{
+  background:linear-gradient(160deg,#150c05,#0c0602);
+  border:1px solid var(--border);border-radius:10px;overflow:hidden;
+}
+th,td{padding:10px 16px;text-align:left}
+thead th{
+  font-size:.64rem;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);
+  background:#1a0d05;border-bottom:1px solid var(--border);
+}
+tbody tr+tr{border-top:1px solid #2a1a0c}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+td.val{color:var(--gold);font-weight:700}
+tfoot td{
+  background:#1a0d05;border-top:2px solid var(--border);
+  font-family:"Arial Black",Arial,sans-serif;color:var(--gold);
+}
+
+/* ── RTP BAR ── */
+.rtpbar{
+  display:flex;height:30px;border-radius:6px;overflow:hidden;border:1px solid var(--border);
+  margin-bottom:10px;font-size:.62rem;font-weight:700;
+}
+.rtpbar span{display:flex;align-items:center;justify-content:center;color:#1a0d02;white-space:nowrap;overflow:hidden}
+.s-base{background:#ffd700}
+.s-fg{background:#e8962e}
+.s-hs{background:#c8102e;color:#fff}
+.s-prog{background:#8e44ad;color:#fff}
+.s-gap{background:#241405;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.72rem;color:var(--muted);margin-top:4px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+/* ── JACKPOT TILES ── */
+.jp-tile{text-align:center;border-radius:10px;padding:16px 10px;border:2px solid}
+.jp-tile .nm{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.jp-tile .amt{font-family:"Arial Black",Arial,sans-serif;font-size:1.5rem;margin:6px 0 2px}
+.jp-tile .meta{font-size:.64rem;color:var(--muted)}
+.jp-grand{border-color:#ff3333;background:linear-gradient(160deg,#2a0606,#0c0602)}
+.jp-grand .amt{color:#ff4040;text-shadow:0 0 14px #ff000088}
+.jp-major{border-color:var(--gold);background:linear-gradient(160deg,#241a05,#0c0602)}
+.jp-major .amt{color:var(--gold);text-shadow:0 0 12px #ffd70066}
+.jp-minor{border-color:#bbb;background:linear-gradient(160deg,#1a1a1a,#0c0602)}
+.jp-minor .amt{color:#dcdcdc}
+.jp-mini{border-color:#cd7f32;background:linear-gradient(160deg,#1f1206,#0c0602)}
+.jp-mini .amt{color:#e0913f}
+
+.pill{display:inline-block;font-size:.6rem;letter-spacing:1px;text-transform:uppercase;
+  padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--muted);margin-left:8px}
+.pill.prog{color:#c98cff;border-color:#6f3a9e}
+.pill.fixed{color:var(--green);border-color:#2c6b3f}
+
+.note{font-size:.78rem;color:var(--muted);margin-top:12px;padding-left:14px;border-left:2px solid var(--border)}
+footer{margin-top:46px;padding-top:20px;border-top:1px solid var(--border);font-size:.72rem;color:var(--muted);text-align:center}
+a.back{color:var(--gold);text-decoration:none;font-size:.78rem;letter-spacing:1px}
+a.back:hover{text-decoration:underline}
+@media(max-width:640px){.g3,.g4{grid-template-columns:repeat(2,1fr)}h1{font-size:1.9rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">Game Mathematics · Sales Sheet</div>
+  <h1>DRAGON FORGE LINK</h1>
+  <div class="subtitle">High Stakes</div>
+  <div class="doc-tag">VAR 01 · Theoretical Hold Summary</div>
+</header>
+
+<div class="wrap">
+
+  <!-- ── GAME OVERVIEW ── -->
+  <section>
+    <div class="sec-head"><h2>Game Overview</h2></div>
+    <div class="grid g4">
+      <div class="card"><div class="lbl">Reels × Rows</div><div class="big">5 × 3</div><div class="sub">25 / 50 paylines</div></div>
+      <div class="card"><div class="lbl">Volatility</div><div class="big">Med-High</div><div class="sub">Scale 3 / 5</div></div>
+      <div class="card"><div class="lbl">Denominations</div><div class="big">1¢–10¢</div><div class="sub">1¢ · 2¢ · 5¢ · 10¢</div></div>
+      <div class="card"><div class="lbl">Max Win Feature</div><div class="big">Hold&nbsp;&amp;&nbsp;Spin</div><div class="sub">+ Free Games · 4-tier link</div></div>
+    </div>
+  </section>
+
+  <!-- ── RTP SUMMARY ── -->
+  <section>
+    <div class="sec-head"><h2>RTP Summary</h2></div>
+    <div class="rtpbar">
+      <span class="s-base" style="width:37.61%">Base 37.6%</span>
+      <span class="s-fg"   style="width:17.30%">FG 17.3%</span>
+      <span class="s-hs"   style="width:30.89%">H&amp;S 30.9%</span>
+      <span class="s-prog" style="width:3.98%">Prog</span>
+      <span class="s-gap"  style="width:10.22%">House 10.2%</span>
+    </div>
+    <div class="legend">
+      <span><i class="s-base"></i>Base game (line + scatter)</span>
+      <span><i class="s-fg"></i>Free Games</span>
+      <span><i class="s-hs"></i>Hold &amp; Spin</span>
+      <span><i class="s-prog"></i>Progressive</span>
+    </div>
+    <div class="card-table" style="margin-top:14px">
+      <table>
+        <thead><tr><th>Component</th><th class="num">Contribution</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>Base game — lines &amp; scatter</td><td class="num val">37.61%</td><td>Primary reels</td></tr>
+          <tr><td>Free Games feature</td><td class="num val">17.30%</td><td>6 FG · linked reels 2-4</td></tr>
+          <tr><td>Hold &amp; Spin feature</td><td class="num val">30.89%</td><td>Chip respins · MINI/MINOR</td></tr>
+          <tr><td>Progressive (Grand + Major)</td><td class="num val">3.98%</td><td>0.95% meter + startups</td></tr>
+        </tbody>
+        <tfoot><tr><td>Total Theoretical RTP</td><td class="num">89.78%</td><td>—</td></tr></tfoot>
+      </table>
+    </div>
+    <p class="note">Simulated over 200,000,000 spins on the live game engine. Design target
+      91.31% (Feature 32.15% / Progressive 3.95%); Free Games paytable is calibrated, not
+      par-exact, accounting for the ~1.5% gap.</p>
+  </section>
+
+  <!-- ── FEATURE FREQUENCIES ── -->
+  <section>
+    <div class="sec-head"><h2>Feature Frequencies</h2></div>
+    <div class="grid g3">
+      <div class="card"><div class="lbl">Free Games Trigger</div><div class="big">1 in 131</div><div class="sub">0.765% · 3+ Suitcase scatters</div></div>
+      <div class="card"><div class="lbl">Hold &amp; Spin Trigger</div><div class="big">1 in 121</div><div class="sub">0.827% · 6+ Chips</div></div>
+      <div class="card"><div class="lbl">Any Feature</div><div class="big">1 in 63</div><div class="sub">1.59% of spins</div></div>
+    </div>
+  </section>
+
+  <!-- ── AVERAGE FEATURE PAYS ── -->
+  <section>
+    <div class="sec-head"><h2>Average Feature Pays</h2></div>
+    <div class="card-table">
+      <table>
+        <thead><tr><th>Feature</th><th class="num">Avg Session Win</th><th class="num">× Bet</th><th class="num">Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Free Games session</td><td class="num val">784 cr</td><td class="num">31.3×</td><td class="num">6 games, retrig +3</td></tr>
+          <tr><td>Hold &amp; Spin session</td><td class="num val">853 cr</td><td class="num">34.1×</td><td class="num">incl. jackpots</td></tr>
+          <tr><td>Avg chips collected / H&amp;S</td><td class="num val">7.34</td><td class="num">—</td><td class="num">of 15 cells</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Credits at minimum bet (25 lines × 1 = 25-credit total bet). H&amp;S starts
+      with 3 respins; any new chip resets to 3. Most sessions end at 6-8 chips (≈83%).</p>
+  </section>
+
+  <!-- ── HIT FREQUENCIES ── -->
+  <section>
+    <div class="sec-head"><h2>Hit Frequencies</h2></div>
+    <div class="grid g4">
+      <div class="card"><div class="lbl">Any Win (incl. features)</div><div class="big">29.1%</div><div class="sub">1 in 3.4 spins</div></div>
+      <div class="card"><div class="lbl">Line / Scatter Hit</div><div class="big">28.3%</div><div class="sub">immediate pay</div></div>
+      <div class="card"><div class="lbl">Free Games</div><div class="big">0.77%</div><div class="sub">per spin</div></div>
+      <div class="card"><div class="lbl">Hold &amp; Spin</div><div class="big">0.83%</div><div class="sub">per spin</div></div>
+    </div>
+  </section>
+
+  <!-- ── JACKPOTS ── -->
+  <section>
+    <div class="sec-head"><h2>Jackpot Information</h2></div>
+    <div class="grid g4">
+      <div class="jp-tile jp-grand"><div class="nm">Grand</div><div class="amt">$15,000</div><div class="meta">1,500,000 cr · 15 chips</div></div>
+      <div class="jp-tile jp-major"><div class="nm">Major</div><div class="amt">$500</div><div class="meta">50,000 cr seed</div></div>
+      <div class="jp-tile jp-minor"><div class="nm">Minor</div><div class="amt">$50</div><div class="meta">5,000 cr</div></div>
+      <div class="jp-tile jp-mini"><div class="nm">Mini</div><div class="amt">$10</div><div class="meta">1,000 cr</div></div>
+    </div>
+    <div class="card-table" style="margin-top:14px">
+      <table>
+        <thead><tr><th>Tier</th><th>Type</th><th class="num">Meter Rate</th><th class="num">Hit Frequency</th><th class="num">Award</th></tr></thead>
+        <tbody>
+          <tr><td>Grand <span class="pill prog">Progressive</span></td><td>Collect all 15 chips</td><td class="num">0.200%</td><td class="num val">1 in 3.85M spins</td><td class="num">$15,000+</td></tr>
+          <tr><td>Major <span class="pill prog">Progressive</span></td><td>Chip label</td><td class="num">0.750%</td><td class="num val">1 in 136K spins</td><td class="num">$500+</td></tr>
+          <tr><td>Minor <span class="pill fixed">Fixed</span></td><td>Chip label</td><td class="num">—</td><td class="num val">0.17% of chips</td><td class="num">$50</td></tr>
+          <tr><td>Mini <span class="pill fixed">Fixed</span></td><td>Chip label</td><td class="num">—</td><td class="num val">0.81% of chips</td><td class="num">$10</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Dollar values shown at 1¢ denomination; Grand &amp; Major are progressive
+      and scale with denomination and meter. Grand is won almost entirely via the Free Games
+      BIG&nbsp;CHIP path (starts at 9 chips); from a base trigger it is ≈1 in 13M spins.</p>
+  </section>
+
+  <!-- ── CHIP PRIZE MENU ── -->
+  <section>
+    <div class="sec-head"><h2>Chip Prize Menu</h2></div>
+    <div class="card-table">
+      <table>
+        <thead><tr><th>Prize</th><th class="num">Probability</th><th>Prize</th><th class="num">Probability</th></tr></thead>
+        <tbody>
+          <tr><td>1× total bet</td><td class="num val">37.99%</td><td>15×</td><td class="num val">2.37%</td></tr>
+          <tr><td>2×</td><td class="num val">24.69%</td><td>20×</td><td class="num val">1.71%</td></tr>
+          <tr><td>3×</td><td class="num val">13.30%</td><td>50×</td><td class="num val">0.665%</td></tr>
+          <tr><td>4×</td><td class="num val">7.60%</td><td>100×</td><td class="num val">0.237%</td></tr>
+          <tr><td>5×</td><td class="num val">6.65%</td><td>MINI</td><td class="num val">0.807%</td></tr>
+          <tr><td>10×</td><td class="num val">3.80%</td><td>MINOR</td><td class="num val">0.171%</td></tr>
+          <tr><td colspan="2"></td><td>MAJOR</td><td class="num val">0.0114%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Figures derived by Monte Carlo simulation (200M spins) on the production game logic —
+    <a class="back" href="index.html">← Back to game</a><br>
+    Dragon Forge Link · High Stakes · VAR 01 · For evaluation/demo purposes.
+  </footer>
+</div>
+</body>
+</html>
