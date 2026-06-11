@@ -940,16 +940,18 @@ function renderCell(r, row, symId, prize) {
   cell.innerHTML = inner;
 }
 
-// Denomination-aware face label for a chip prize.
-//   LOW denom  (< $0.10): credit prizes show the raw credit value ("100","50"…).
-//   HIGH denom (>= $0.10): credit prizes show DOLLARS = val × denomination.
+// Denomination-aware face label for a chip prize. Par sheet: credit prizes are
+// the multiplier × total credits bet — the chip face shows that FINAL value.
+//   LOW denom  (< $0.10): final credit value ("25","50","2,500"…).
+//   HIGH denom (>= $0.10): DOLLARS = final credit value × denomination.
 //   Jackpot prizes always show MINI / MINOR / MAJOR / GRAND labels.
 function chipPrizeLabel(prize) {
   if (prize.type === 'partOfBig') return '';
   if (prize.type === 'credits') {
+    const credits = prize.val * getTotalBet();    // multiplier × total credits bet
     const denom = DENOM_OPTIONS[denomIdx] / 100;  // dollars per credit
-    if (denom >= 0.10) return '$' + (prize.val * denom).toFixed(2);
-    return String(prize.val);
+    if (denom >= 0.10) return '$' + (credits * denom).toFixed(2);
+    return credits.toLocaleString('en-US');
   }
   return prize.type.toUpperCase();  // mini | minor | major | grand
 }
