@@ -719,19 +719,23 @@ const WIN_LINES = [
 // PAYTABLE  [5of, 4of, 3of, 2of]  × bet multiplier
 // ═══════════════════════════════════════════════════════════
 const PAYTABLE = {
-  // × lineBet per line; scatter × totalBet. PIC1-3+scatter CONFIRMED from par sheet image.
-  // PIC4+cards CALIBRATED: tuned to hit par sheet base RTP 55.209% (VAR 01).
-  // Note: card 4x values exceed confirmed PIC3 4x=25; actual par sheet PIC4/card 4x values unknown.
-  0: [150,50,10,2],   // PIC1 (Roulette)  — CONFIRMED
-  1: [100,30,5,0],    // PIC2 (Showgirl)  — CONFIRMED
-  2: [100,25,5,0],    // PIC3 (Car)       — CONFIRMED
-  3: [75,55,14,0],    // PIC4 (Cards)     — CALIBRATED
+  // × lineBet per line; scatter × totalBet. ALL values CONFIRMED from par sheet.
+  // RTP breakdown (VAR 01):
+  //   Line + Scatter (this sim):  ~37.6%
+  //   Free Games contribution:    ~17.6%  → "Adjusted Base Rtp" = 55.209%
+  //   Hold & Spin ("Feature Rtp"): 32.146%
+  //   Progressive:                  3.950%
+  //   Total:                       91.305%
+  0: [150,50,10,2],   // PIC1 (Roulette)  5/4/3/2-oak — CONFIRMED
+  1: [100,30,5,0],    // PIC2 (Showgirl)  5/4/3-oak   — CONFIRMED
+  2: [100,25,5,0],    // PIC3 (Car)       5/4/3-oak   — CONFIRMED
+  3: [100,25,5,0],    // PIC4 (Cards)     5/4/3-oak   — CONFIRMED
   5: [100,15,2],      // SCAT1 (Suitcase) [5of,4of,3of] × totalBet — CONFIRMED
-  8: [60,45,14,0],    // K                — CALIBRATED
-  9: [50,35,14,0],    // Q                — CALIBRATED
-  10:[40,28,11,0],    // J                — CALIBRATED
-  11:[30,22,9,0],     // 10               — CALIBRATED
-  12:[25,14,6,0],     // 9                — CALIBRATED
+  8: [75,20,5,0],     // K  5/4/3-oak — CONFIRMED
+  9: [50,10,5,0],     // Q  5/4/3-oak — CONFIRMED
+  10:[50,10,5,0],     // J  5/4/3-oak — CONFIRMED
+  11:[50,10,5,0],     // 10 5/4/3-oak — CONFIRMED
+  12:[50,10,5,0],     // 9  5/4/3-oak — CONFIRMED
 };
 
 // Chip prize pool (x total bet) — for Hold & Spin cell values
