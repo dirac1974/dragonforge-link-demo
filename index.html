@@ -883,6 +883,10 @@ const DENOM_OPTIONS = [1,2,5,10];   // cents × 100 = credits
 // grid[r][row] = symbol ID, for 5 reels × 3 rows
 let grid = Array.from({length:5},()=>[1,1,1]);
 
+// Base-game chip prizes: key "r,row" → prize object (from CHIP_PRIZES). Assigned
+// when a base spin lands so each CHIP shows a value on its face, like H&S.
+let baseChipPrizes = {};
+
 // Hold & Spin state
 let inHoldSpin    = false;
 let heldCells     = {};   // key "r,row" → { sym, prize }
@@ -936,13 +940,34 @@ function renderCell(r, row, symId, prize) {
   cell.innerHTML = inner;
 }
 
+// Denomination-aware face label for a chip prize.
+//   LOW denom  (< $0.10): credit prizes show the raw credit value ("100","50"…).
+//   HIGH denom (>= $0.10): credit prizes show DOLLARS = val × denomination.
+//   Jackpot prizes always show MINI / MINOR / MAJOR / GRAND labels.
+function chipPrizeLabel(prize) {
+  if (prize.type === 'partOfBig') return '';
+  if (prize.type === 'credits') {
+    const denom = DENOM_OPTIONS[denomIdx] / 100;  // dollars per credit
+    if (denom >= 0.10) return '$' + (prize.val * denom).toFixed(2);
+    return String(prize.val);
+  }
+  return prize.type.toUpperCase();  // mini | minor | major | grand
+}
+
 function renderChipWithPrize(prize) {
-  let label = '';
-  if (prize.type === 'credits') label = `${prize.val}×`;
-  else if (prize.type === 'partOfBig') label = '';
-  else label = prize.type.toUpperCase();
-  const color = prize.type === 'major' ? '#ffd95a' : prize.type === 'minor' ? '#e8e8f0' : prize.type === 'mini' ? '#ffb070' : '#fff6cc';
-  const fs = label.length > 4 ? 15 : 24;
+  const label = chipPrizeLabel(prize);
+  if (!label) return SVGS[S.CHIP] || '';
+  const isJackpot = prize.type !== 'credits' && prize.type !== 'partOfBig';
+  // Jackpot labels read in red/purple; credit values in gold. Outlined either way.
+  const fill = prize.type === 'major' ? '#ff4d5e'
+             : prize.type === 'grand' ? '#ff3b5c'
+             : isJackpot              ? '#c77dff'   // mini / minor → purple
+             :                          '#fff3b0';  // credit values → gold
+  // Scale font so short values are bold & large, long values still fit the coin.
+  const fs = label.length <= 2 ? 32
+           : label.length === 3 ? 26
+           : label.length <= 5 ? 19
+           :                      15;
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs><radialGradient id="cpz" cx="40%" cy="30%" r="85%"><stop offset="0%" stop-color="#fff2bc"/><stop offset="50%" stop-color="#e8ae32"/><stop offset="100%" stop-color="#7a4c0c"/></radialGradient></defs>
 <circle cx="50" cy="51" r="46" fill="#5a3408"/>
@@ -951,8 +976,17 @@ function renderChipWithPrize(prize) {
 <circle cx="50" cy="50" r="36" fill="#241204"/>
 <circle cx="50" cy="50" r="36" fill="none" stroke="#ffe9a8" stroke-width="1.4"/>
 <path d="M16,34 A46,46 0 0 1 38,9" stroke="#fff8d8" stroke-width="3.4" fill="none" opacity=".6" stroke-linecap="round"/>
-<text x="50" y="51" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial,sans-serif" font-size="${fs}" font-weight="900" fill="${color}">${label}</text>
+<text x="50" y="52" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial,sans-serif" font-size="${fs}" font-weight="900" fill="${fill}" stroke="#2a1503" stroke-width="3.2" paint-order="stroke" stroke-linejoin="round">${label}</text>
 </svg>`;
+}
+
+// Assign a random chip prize to every CHIP on a freshly generated base grid so
+// each lands face-up with a value (mirrors Hold & Spin behaviour).
+function assignBaseChipPrizes(g) {
+  baseChipPrizes = {};
+  for (let r = 0; r < 5; r++) for (let row = 0; row < 3; row++) {
+    if (g[r][row] === S.CHIP) baseChipPrizes[`${r},${row}`] = pickChipPrize();
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1116,6 +1150,7 @@ function doSpin() {
   removeWinFlash();
 
   const newGrid = inFreeGames ? generateFreeGameGrid() : generateGrid();
+  if (inFreeGames) baseChipPrizes = {}; else assignBaseChipPrizes(newGrid);
   startSpinAnim(newGrid, () => {
     grid = newGrid;
     renderAllCells();
@@ -1196,7 +1231,8 @@ function stopReel(r, finalSyms) {
   // Land final symbols with the classic overshoot bounce
   for (let row = 0; row < 3; row++) {
     grid[r][row] = finalSyms[row];
-    renderCell(r, row, finalSyms[row]);
+    const p = (!inHoldSpin && finalSyms[row] === S.CHIP) ? baseChipPrizes[`${r},${row}`] : undefined;
+    renderCell(r, row, finalSyms[row], p);
   }
   reelEl.classList.remove('bounce');
   void reelEl.offsetWidth; // restart animation if reel bounced last spin
@@ -1216,7 +1252,8 @@ function setSpin(on) {
 
 function renderAllCells() {
   for (let r = 0; r < 5; r++) for (let row = 0; row < 3; row++) {
-    renderCell(r, row, grid[r][row]);
+    const p = (!inHoldSpin && grid[r][row] === S.CHIP) ? baseChipPrizes[`${r},${row}`] : undefined;
+    renderCell(r, row, grid[r][row], p);
   }
 }
 
