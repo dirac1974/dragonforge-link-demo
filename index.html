@@ -719,17 +719,19 @@ const WIN_LINES = [
 // PAYTABLE  [5of, 4of, 3of, 2of]  × bet multiplier
 // ═══════════════════════════════════════════════════════════
 const PAYTABLE = {
-  // 5x from image: PIC1=150, PIC2=100. 4x/3x/2x calibrated to hit 55.209% base RTP.
-  0: [150,100,25,5],  // DRAGON  (PIC1=Roulette)  — 5x from par sheet image
-  1: [100,50,15,3],   // PHOENIX (PIC2=Showgirl)  — 5x from par sheet image
-  2: [100,25,10,2],   // TIGER   (PIC3=Car)
-  3: [75,20,8,0],     // JADE    (PIC4=Cards)
-  5: [100,15,2],      // SUITCASE scatter [5of,4of,3of] × total bet — from image
-  8: [40,12,4,0],     // KING
-  9: [30,10,3,0],     // QUEEN
-  10:[25,8,2,0],      // JACK
-  11:[20,6,2,0],      // TEN
-  12:[15,5,1,0],      // NINE
+  // × lineBet per line; scatter × totalBet. PIC1-3+scatter CONFIRMED from par sheet image.
+  // PIC4+cards CALIBRATED: tuned to hit par sheet base RTP 55.209% (VAR 01).
+  // Note: card 4x values exceed confirmed PIC3 4x=25; actual par sheet PIC4/card 4x values unknown.
+  0: [150,50,10,2],   // PIC1 (Roulette)  — CONFIRMED
+  1: [100,30,5,0],    // PIC2 (Showgirl)  — CONFIRMED
+  2: [100,25,5,0],    // PIC3 (Car)       — CONFIRMED
+  3: [75,55,14,0],    // PIC4 (Cards)     — CALIBRATED
+  5: [100,15,2],      // SCAT1 (Suitcase) [5of,4of,3of] × totalBet — CONFIRMED
+  8: [60,45,14,0],    // K                — CALIBRATED
+  9: [50,35,14,0],    // Q                — CALIBRATED
+  10:[40,28,11,0],    // J                — CALIBRATED
+  11:[30,22,9,0],     // 10               — CALIBRATED
+  12:[25,14,6,0],     // 9                — CALIBRATED
 };
 
 // Chip prize pool (x total bet) — for Hold & Spin cell values
