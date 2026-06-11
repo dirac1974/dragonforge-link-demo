@@ -796,24 +796,56 @@ const FG_PAYTABLE = {
   12:[25,5,3,0],    // 9
 };
 
-// Chip prize pool (x total bet) — for Hold & Spin cell values
+// CHIP PRIZES — par sheet menu: MAJOR/MINOR/MINI label or 1,2,3,4,5,10,15,20,
+// 50,100 × totalBet. MINI=1000cr / MINOR=5000cr FIXED bonuses (not progressive).
+// GRAND is NOT a chip label — it is won by collecting all 15 chips.
+// Weights CALIBRATED to par sheet Feature Rtp 32.146% (measured 32.09% over 1M
+// games at chip rate 0.03). MAJOR weight set for ~1-in-1000 H&S features
+// (par: major hit 1 in 100k games ≈ 93×rarer than H&S trigger).
 const CHIP_PRIZES = [
-  { type:'credits', val:1,   weight:18 },
-  { type:'credits', val:2,   weight:14 },
-  { type:'credits', val:3,   weight:10 },
-  { type:'credits', val:4,   weight:8  },
-  { type:'credits', val:5,   weight:8  },
-  { type:'credits', val:10,  weight:6  },
-  { type:'credits', val:15,  weight:4  },
-  { type:'credits', val:20,  weight:3  },
-  { type:'credits', val:50,  weight:2  },
-  { type:'credits', val:100, weight:1  },
-  { type:'mini',    val:0,   weight:12 },
-  { type:'minor',   val:0,   weight:6  },
-  { type:'major',   val:0,   weight:2  },
-  { type:'grand',   val:0,   weight:1  },
+  { type:'credits', val:1,   weight:40   },
+  { type:'credits', val:2,   weight:26   },
+  { type:'credits', val:3,   weight:14   },
+  { type:'credits', val:4,   weight:8    },
+  { type:'credits', val:5,   weight:7    },
+  { type:'credits', val:10,  weight:4    },
+  { type:'credits', val:15,  weight:2.5  },
+  { type:'credits', val:20,  weight:1.8  },
+  { type:'credits', val:50,  weight:0.7  },
+  { type:'credits', val:100, weight:0.25 },
+  { type:'mini',    val:0,   weight:0.85 },
+  { type:'minor',   val:0,   weight:0.18 },
+  { type:'major',   val:0,   weight:0.012},
 ];
 const CHIP_WEIGHT_TOTAL = CHIP_PRIZES.reduce((a,p)=>a+p.weight,0);
+
+// BIG CHIP PRIZES (FG only) — par sheet: MAJOR/MINOR/MINI or 5,10,15,20,25,30,
+// 40,50,60,80,100 × totalBet. One prize per BIG CHIP (which counts as 9 chips).
+const BIG_CHIP_PRIZES = [
+  { type:'credits', val:5,   weight:20  },
+  { type:'credits', val:10,  weight:16  },
+  { type:'credits', val:15,  weight:12  },
+  { type:'credits', val:20,  weight:9   },
+  { type:'credits', val:25,  weight:7   },
+  { type:'credits', val:30,  weight:5   },
+  { type:'credits', val:40,  weight:3   },
+  { type:'credits', val:50,  weight:2   },
+  { type:'credits', val:60,  weight:1.2 },
+  { type:'credits', val:80,  weight:0.6 },
+  { type:'credits', val:100, weight:0.4 },
+  { type:'mini',    val:0,   weight:1.0 },
+  { type:'minor',   val:0,   weight:0.2 },
+  { type:'major',   val:0,   weight:0.012},
+];
+const BIG_CHIP_WEIGHT_TOTAL = BIG_CHIP_PRIZES.reduce((a,p)=>a+p.weight,0);
+
+// Fixed-credit bonuses (par sheet: MINOR BONUS is 5000 credits, MINI is 1000)
+const MINI_BONUS  = 1000;
+const MINOR_BONUS = 5000;
+
+// Chip landing probability per free cell per H&S spin — CALIBRATED with the
+// prize weights above to hit Feature Rtp 32.146%.
+const HS_CHIP_RATE = 0.03;
 
 // ═══════════════════════════════════════════════════════════
 // GAME STATE
@@ -845,8 +877,12 @@ let freeGamesLeft   = 0;
 let freeGamesTotalWin = 0;
 let pendingFreeGames = false; // FG won on same spin that triggered H&S
 
-// Jackpot amounts (in credits)
-let jackpots = { grand:1000000, major:100000, minor:10000, mini:2500 };
+// Progressive jackpots (credits @ 1c denom) — par sheet VAR 01 linked seeds:
+// GRAND startup $15,000 = 1,500,000cr; MAJOR startup $500 = 50,000cr.
+// MINI/MINOR are fixed bonuses (MINI_BONUS/MINOR_BONUS), not progressives.
+const GRAND_SEED = 1500000;
+const MAJOR_SEED = 50000;
+let jackpots = { grand: GRAND_SEED, major: MAJOR_SEED };
 
 // Reel stop positions
 let reelPos = Array(5).fill(0);
@@ -885,8 +921,9 @@ function renderCell(r, row, symId, prize) {
 function renderChipWithPrize(prize) {
   let label = '';
   if (prize.type === 'credits') label = `${prize.val}×`;
+  else if (prize.type === 'partOfBig') label = '';
   else label = prize.type.toUpperCase();
-  const color = prize.type === 'grand' ? '#ff3333' : prize.type === 'major' ? '#ffd700' : prize.type === 'minor' ? '#c8c8c8' : prize.type === 'mini' ? '#cd7f32' : '#ffd700';
+  const color = prize.type === 'major' ? '#ffd700' : prize.type === 'minor' ? '#c8c8c8' : prize.type === 'mini' ? '#cd7f32' : '#ffd700';
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs><radialGradient id="cpz" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#ffe566"/><stop offset="55%" stop-color="#c8a000"/><stop offset="100%" stop-color="#6a4a00"/></radialGradient></defs>
 <circle cx="50" cy="50" r="46" fill="#4a3600" stroke="#ffd700" stroke-width="1.5"/>
@@ -935,13 +972,29 @@ function generateGrid() {
   return newGrid;
 }
 
-function pickChipPrize() {
-  let r = Math.random() * CHIP_WEIGHT_TOTAL;
-  for (const p of CHIP_PRIZES) {
+function majorAlreadyHeld() {
+  // Par sheet: only 1 CHIP or BIG CHIP may contain MAJOR JACKPOT at any time
+  return Object.values(heldCells).some(p => p.type === 'major');
+}
+
+function pickFromPrizeTable(table, total) {
+  let r = Math.random() * total;
+  for (const p of table) {
     r -= p.weight;
-    if (r <= 0) return { ...p };
+    if (r <= 0) {
+      if (p.type === 'major' && majorAlreadyHeld()) continue;
+      return { ...p };
+    }
   }
-  return { ...CHIP_PRIZES[0] };
+  return { ...table[0] };
+}
+
+function pickChipPrize() {
+  return pickFromPrizeTable(CHIP_PRIZES, CHIP_WEIGHT_TOTAL);
+}
+
+function pickBigChipPrize() {
+  return pickFromPrizeTable(BIG_CHIP_PRIZES, BIG_CHIP_WEIGHT_TOTAL);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1042,6 +1095,7 @@ function doSpin() {
   }
 
   balance -= totalBet;
+  accrueJackpots(totalBet);
   updateUI();
   setStatus('');
   clearHighlights();
@@ -1232,11 +1286,21 @@ function triggerHoldSpin() {
   hsPrizeTotal = 0;
   heldCells = {};
 
-  // Lock initial chips and assign prizes
+  // FG BIG CHIP: the whole middle window is one chip with ONE prize from the
+  // BIG CHIP PRIZES menu, counting as 9 chips collected.
+  const isBigChip = inFreeGames && grid[1][0] === S.CHIP;
+  if (isBigChip) {
+    for (let r = 1; r <= 3; r++) for (let row = 0; row < 3; row++) {
+      heldCells[`${r},${row}`] = (r === 2 && row === 1)
+        ? pickBigChipPrize()
+        : { type: 'partOfBig', val: 0 };
+    }
+  }
+
+  // Lock remaining single chips and assign prizes
   for (let r = 0; r < 5; r++) for (let row = 0; row < 3; row++) {
-    if (grid[r][row] === S.CHIP) {
-      const prize = pickChipPrize();
-      heldCells[`${r},${row}`] = prize;
+    if (grid[r][row] === S.CHIP && !heldCells[`${r},${row}`]) {
+      heldCells[`${r},${row}`] = pickChipPrize();
     }
   }
 
@@ -1303,9 +1367,7 @@ function doHSSpin() {
     // Generate new chip positions for free slots
     let newChips = [];
     freePositions.forEach(([r, row]) => {
-      // ~15% chance of landing CHIP in H&S
-      const rand = Math.random();
-      if (rand < 0.15) newChips.push([r, row]);
+      if (Math.random() < HS_CHIP_RATE) newChips.push([r, row]);
     });
 
     // Render non-chip free cells as blanks (low symbols)
@@ -1350,7 +1412,8 @@ function endHoldSpin() {
   inHoldSpin = false;
   document.getElementById('hs-box').classList.remove('show');
 
-  // Tally prizes
+  // Tally prizes. Par sheet: all CHIP PRIZES are paid in addition to GRAND;
+  // GRAND is won by collecting all 15 chips (it is not a chip label).
   let creditWin = 0;
   let jackpotWon = null;
   const totalBet = getTotalBet();
@@ -1358,18 +1421,23 @@ function endHoldSpin() {
   Object.values(heldCells).forEach(prize => {
     if (prize.type === 'credits') {
       creditWin += prize.val * totalBet;
-    } else if (prize.type === 'grand') {
-      jackpotWon = { name: 'GRAND JACKPOT', amt: jackpots.grand };
-      jackpots.grand = 1000000; // reset seed
     } else if (prize.type === 'major') {
-      jackpotWon = jackpotWon || { name: 'MAJOR JACKPOT', amt: jackpots.major };
+      jackpotWon = { name: 'MAJOR JACKPOT', amt: jackpots.major };
       creditWin += jackpots.major;
+      jackpots.major = MAJOR_SEED;
     } else if (prize.type === 'minor') {
-      creditWin += jackpots.minor;
+      creditWin += MINOR_BONUS;
     } else if (prize.type === 'mini') {
-      creditWin += jackpots.mini;
+      creditWin += MINI_BONUS;
     }
+    // 'partOfBig' cells carry no prize of their own
   });
+
+  if (countHeld() === 15) {
+    jackpotWon = { name: 'GRAND JACKPOT', amt: jackpots.grand };
+    creditWin += jackpots.grand;
+    jackpots.grand = GRAND_SEED;
+  }
 
   hsPrizeTotal = creditWin;
   balance += creditWin;
@@ -1381,7 +1449,8 @@ function endHoldSpin() {
   renderAllCells();
 
   if (jackpotWon) {
-    balance += jackpotWon.amt;
+    // jackpot amount already included in creditWin above
+    if (inFreeGames) freeGamesTotalWin += creditWin;
     updateUI();
     showJackpotWin(jackpotWon.name, jackpotWon.amt);
   } else {
@@ -1523,20 +1592,19 @@ function dismissJackpot() {
   if (isAuto) scheduleAutoSpin();
 }
 
-// Periodically grow jackpots
-setInterval(() => {
-  jackpots.grand  += Math.floor(Math.random() * 100 + 50);
-  jackpots.major  += Math.floor(Math.random() * 20 + 10);
-  jackpots.minor  += Math.floor(Math.random() * 5 + 2);
+// Progressive increments per par sheet: GRAND 0.200% / MAJOR 0.750% of turnover
+function accrueJackpots(totalBet) {
+  jackpots.grand += totalBet * 0.002;
+  jackpots.major += totalBet * 0.0075;
   updateJackpotDisplay();
-}, 3000);
+}
 
 function updateJackpotDisplay() {
-  const d = (n) => (n/100).toLocaleString('en-US',{style:'currency',currency:'USD'});
+  const d = (n) => (Math.floor(n)/100).toLocaleString('en-US',{style:'currency',currency:'USD'});
   document.getElementById('jp-grand').textContent = d(jackpots.grand);
   document.getElementById('jp-major').textContent = d(jackpots.major);
-  document.getElementById('jp-minor').textContent = d(jackpots.minor);
-  document.getElementById('jp-mini').textContent  = d(jackpots.mini);
+  document.getElementById('jp-minor').textContent = d(MINOR_BONUS);
+  document.getElementById('jp-mini').textContent  = d(MINI_BONUS);
 }
 
 // ═══════════════════════════════════════════════════════════
